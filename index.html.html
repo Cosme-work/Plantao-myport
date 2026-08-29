@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<!-- saved from url=(0105)file:///C:/Users/cosme/.gemini/antigravity/brain/9925eadf-29b9-40dc-b0d3-0ed46e537708/painel-plantao.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Plantão — MyPort</title>
+  <style>
+    :root{
+      --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;
+      --border:#2e3350;--text:#e0e4f0;--muted:#7a80a0;
+      --orange:#ff7300;--green:#0bb423;--red:#e03535;
+      --yellow:#f0c040;--blue:#3a8fdd;--purple:#8a5cf7;--r:8px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;min-height:100vh;}
+
+    /* HEADER */
+    header{background:var(--surface);border-bottom:2px solid var(--orange);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .logo-badge{background:var(--orange);color:#fff;font-weight:800;font-size:13px;padding:4px 10px;border-radius:6px;letter-spacing:1px;}
+    .logo-text{font-size:15px;font-weight:600;}
+    .header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+    #clock{font-size:24px;font-weight:800;color:var(--orange);font-variant-numeric:tabular-nums;}
+    .hfield{display:flex;flex-direction:column;gap:3px;}
+    .hfield label{font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.5px;}
+    .hfield input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;font-weight:600;padding:4px 9px;outline:none;width:130px;}
+    .hfield input:focus{border-color:var(--orange);}
+    .hfield input::placeholder{color:var(--muted);font-weight:400;}
+
+    /* TABS */
+    .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;gap:4px;overflow-x:auto;}
+    .tab-btn{padding:12px 20px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;font-weight:700;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+    .tab-btn:hover{color:var(--text);}
+    .tab-btn.active{color:var(--orange);border-bottom-color:var(--orange);}
+    .badge{display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;font-size:10px;font-weight:800;border-radius:10px;min-width:18px;height:18px;padding:0 5px;margin-left:6px;vertical-align:middle;}
+    .badge.zero{display:none;}
+    .badge.og{background:var(--orange);}
+
+    /* PANELS */
+    .panels{padding:20px;max-width:1300px;margin:0 auto;}
+    .panel{display:none;}
+    .panel.active{display:block;}
+
+    /* SECTION HEADER */
+    .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+    .sh-title{font-size:18px;font-weight:700;}
+    .sh-title small{font-size:13px;font-weight:400;color:var(--muted);margin-left:8px;}
+
+    /* BUTTONS */
+    .btn{padding:8px 16px;border-radius:var(--r);border:none;cursor:pointer;font-weight:700;font-size:13px;transition:opacity .15s;}
+    .btn:hover{opacity:.82;}
+    .btn-orange{background:var(--orange);color:#fff;}
+    .btn-green{background:var(--green);color:#fff;}
+    .btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+    .btn-red{background:var(--red);color:#fff;}
+    .btn-sm{padding:4px 10px;font-size:12px;}
+    .btn-group{display:flex;gap:8px;flex-wrap:wrap;}
+
+    /* QUICK CAPTURE BAR */
+    .capture-bar{display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:16px;flex-wrap:wrap;}
+    .capture-bar input[type=text]{flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:9px 12px;font-size:14px;outline:none;}
+    .capture-bar input[type=text]:focus{border-color:var(--orange);}
+    .capture-bar input::placeholder{color:var(--muted);}
+    .capture-bar select{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:9px 10px;font-size:13px;outline:none;cursor:pointer;}
+    .capture-bar select:focus{border-color:var(--orange);}
+
+    /* TASK LIST */
+    .task-list{display:flex;flex-direction:column;gap:8px;}
+    .task-item{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;transition:background .15s;}
+    .task-item.done{opacity:.45;background:transparent;}
+    .task-item:hover{background:var(--surface2);}
+    .task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px;transition:all .15s;}
+    .task-check:hover{border-color:var(--green);background:rgba(11,180,35,.1);}
+    .task-item.done .task-check{background:var(--green);border-color:var(--green);color:#fff;}
+    .task-body{flex:1;}
+    .task-desc{font-size:14px;font-weight:600;line-height:1.4;}
+    .task-item.done .task-desc{text-decoration:line-through;color:var(--muted);}
+    .task-meta{display:flex;gap:8px;align-items:center;margin-top:5px;flex-wrap:wrap;}
+    .task-hora{font-size:11px;color:var(--muted);}
+    .task-actions{display:flex;gap:4px;margin-left:auto;flex-shrink:0;}
+
+    /* PILLS */
+    .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
+    .pill-red{background:rgba(224,53,53,.2);color:#ff6b6b;border:1px solid rgba(224,53,53,.4);}
+    .pill-orange{background:rgba(255,115,0,.2);color:var(--orange);border:1px solid rgba(255,115,0,.4);}
+    .pill-yellow{background:rgba(240,192,64,.2);color:var(--yellow);border:1px solid rgba(240,192,64,.4);}
+    .pill-green{background:rgba(11,180,35,.2);color:#2ed84e;border:1px solid rgba(11,180,35,.4);}
+    .pill-blue{background:rgba(58,143,221,.2);color:#6eb8ff;border:1px solid rgba(58,143,221,.4);}
+    .pill-purple{background:rgba(138,92,247,.2);color:#b394ff;border:1px solid rgba(138,92,247,.4);}
+
+    /* PRIORITY BAR */
+    .prior-bar{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+    .prior-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;font-size:12px;font-weight:700;transition:all .15s;}
+    .prior-btn:hover,.prior-btn.active{background:var(--surface2);color:var(--text);border-color:var(--orange);}
+
+    /* EMPTY */
+    .empty{text-align:center;color:var(--muted);padding:40px 20px;font-style:italic;font-size:14px;}
+
+    /* TABLE */
+    .table-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    thead{background:var(--surface2);}
+    th{padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;}
+    th.og{color:var(--orange);}
+    td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:rgba(255,115,0,.04);}
+    .empty-row td{text-align:center;color:var(--muted);padding:30px;font-style:italic;}
+
+    /* TIMER */
+    .timer-ok{color:var(--green);font-weight:700;}
+    .timer-warn{color:var(--yellow);font-weight:700;}
+    .timer-urg{color:var(--red);font-weight:700;animation:pulse 1s infinite;}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+    /* ALERT */
+    .alert{background:rgba(224,53,53,.15);border:1px solid var(--red);border-radius:var(--r);padding:12px 16px;margin-bottom:14px;display:none;align-items:center;gap:10px;font-weight:700;color:#ff6b6b;}
+    .alert.show{display:flex;}
+
+    /* MODAL */
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;}
+    .overlay.show{display:flex;}
+    .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;width:90%;max-width:640px;display:flex;flex-direction:column;gap:14px;max-height:88vh;overflow-y:auto;}
+    .modal h3{font-size:16px;font-weight:700;color:var(--orange);}
+    .modal-footer{display:flex;gap:8px;justify-content:flex-end;}
+    .fgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
+    .fgrid.c2{grid-template-columns:repeat(2,1fr);}
+    .fgrid.c3{grid-template-columns:repeat(3,1fr);}
+    .full{grid-column:1/-1;}
+    .field{display:flex;flex-direction:column;gap:4px;}
+    .field label{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:600;letter-spacing:.4px;}
+    .field input,.field select,.field textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;outline:none;width:100%;}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--orange);}
+    .field textarea{resize:vertical;min-height:70px;}
+    .field select option{background:var(--surface2);}
+
+    /* STATS */
+    .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:18px;}
+    .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;}
+    .stat .n{font-size:30px;font-weight:800;}
+    .stat .l{font-size:11px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+    .stat.og .n{color:var(--orange);}
+    .stat.rd .n{color:var(--red);}
+    .stat.gn .n{color:var(--green);}
+
+    ::-webkit-scrollbar{width:5px;height:5px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+    @media(max-width:650px){
+      .fgrid,.fgrid.c2,.fgrid.c3{grid-template-columns:1fr;}
+      .capture-bar{flex-direction:column;align-items:stretch;}
+      .capture-bar input[type=text]{width:100%;}
+    }
+  </style>
+<style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,#onetap_google_intermediate_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,.adthrive-auto-injected-player-container,.adthrive[id^="cls-video-container"]:has(.adthrive-auto-injected-player-container),#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style></head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="logo">
+    <span class="logo-badge">MYPORT</span>
+    <span class="logo-text">Painel de Plantão</span>
+  </div>
+  <div class="header-right">
+    <div class="hfield">
+      <label>👷 Tático 1</label>
+      <input id="t1" placeholder="Nome do tático 1..." maxlength="25" data-ddg-inputtype="identities.firstName" data-ddg-autofill="true">
+    </div>
+    <div class="hfield">
+      <label>👷 Tático 2</label>
+      <input id="t2" placeholder="Tático 2 (se houver)" maxlength="25" data-ddg-inputtype="unknown">
+    </div>
+    <div class="hfield">
+      <label>Operador</label>
+      <input id="opName" placeholder="Seu nome..." maxlength="30" data-ddg-inputtype="identities.firstName" data-ddg-autofill="true">
+    </div>
+    <div id="clock">20:47:02</div>
+  </div>
+</header>
+
+<!-- ── TABS ── -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab(&#39;fila&#39;,this)">
+    📌 Fila de Tarefas <span id="bdg-fila" class="badge zero">0</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab(&#39;sind&#39;,this)">
+    👔 Síndicos <span id="bdg-sind" class="badge zero">0</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab(&#39;atend&#39;,this)">
+    📋 Atendimento <span id="bdg-atend" class="badge zero og">0</span>
+  </button>
+  <button class="tab-btn" onclick="exportar()" style="margin-left:auto;">
+    📤 Passagem de Plantão
+  </button>
+</div>
+
+<div class="panels">
+
+  <!-- ══════════════════════════════════
+       ABA 1 — FILA DE TAREFAS
+  ══════════════════════════════════ -->
+  <div class="panel active" id="panel-fila">
+
+    <div class="stats" id="statsRow"></div>
+
+    <div class="sh">
+      <div class="sh-title">📌 Fila de Tarefas <small>capture qualquer coisa que chegou no WhatsApp</small></div>
+      <div class="btn-group">
+        <button class="btn btn-ghost btn-sm" onclick="limparConcluidas()">🗑 Limpar concluídas</button>
+      </div>
+    </div>
+
+    <!-- CAPTURA RÁPIDA -->
+    <div class="capture-bar">
+      <input type="text" id="taskInput" placeholder="⚡ O que chegou? Ex: Portão do Res. Sol com defeito — João tático" onkeydown="if(event.key===&#39;Enter&#39;)addTask()" data-ddg-inputtype="unknown">
+      <select id="taskTipo" data-ddg-inputtype="unknown">
+        <option value="OS">🔧 OS / Tático</option>
+        <option value="Cadastro">📝 Cadastro</option>
+        <option value="Síndico">👔 Síndico</option>
+        <option value="Atendimento">📋 Atendimento</option>
+        <option value="Outro">📌 Outro</option>
+      </select>
+      <select id="taskPrior" data-ddg-inputtype="unknown">
+        <option value="Alta">🔴 Alta</option>
+        <option value="Média" selected="">🟡 Média</option>
+        <option value="Baixa">🟢 Baixa</option>
+      </select>
+      <button class="btn btn-orange" onclick="addTask()">+ Capturar</button>
+    </div>
+
+    <!-- FILTRO -->
+    <div class="prior-bar">
+      <button class="prior-btn active" onclick="setFiltro(&#39;&#39;,this)">Todos</button>
+      <button class="prior-btn" onclick="setFiltro(&#39;Alta&#39;,this)">🔴 Alta</button>
+      <button class="prior-btn" onclick="setFiltro(&#39;Média&#39;,this)">🟡 Média</button>
+      <button class="prior-btn" onclick="setFiltro(&#39;Baixa&#39;,this)">🟢 Baixa</button>
+      <button class="prior-btn" onclick="setFiltro(&#39;done&#39;,this)">✅ Concluídas</button>
+    </div>
+
+    <div class="task-list" id="taskList"><div class="empty">Nenhuma tarefa ainda.<br>Use a barra acima para capturar tudo que chegar no WhatsApp.</div></div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ABA 2 — SÍNDICOS
+  ══════════════════════════════════ -->
+  <div class="panel" id="panel-sind">
+    <div class="sh">
+      <div class="sh-title">👔 Demandas de Síndicos <small>⚠ Prioridade Máxima</small></div>
+      <button class="btn btn-red" onclick="abrirModal(&#39;mSind&#39;)">+ Nova Demanda URGENTE</button>
+    </div>
+
+    <div id="alertSind" class="alert">
+      🚨 ATENÇÃO — Síndico(s) sem resposta há mais de 15 minutos!
+    </div>
+
+    <div class="table-wrap">
+      <table><thead><tr>
+        <th class="og">Síndico</th><th>Condomínio</th><th>Tipo</th>
+        <th>Descrição</th><th>⏱ Tempo</th><th>Status</th><th>Resposta</th><th>Ações</th>
+      </tr></thead>
+      <tbody id="bodySind"><tr class="empty-row"><td colspan="8">Nenhuma demanda de síndico.</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ABA 3 — ATENDIMENTO DIÁRIO
+  ══════════════════════════════════ -->
+  <div class="panel" id="panel-atend">
+    <div class="sh">
+      <div class="sh-title">📋 Atendimento Diário <small id="dataHoje">sábado, 29 de agosto</small></div>
+      <div class="btn-group">
+        <button class="btn btn-ghost btn-sm" onclick="if(confirm(&#39;Limpar turno?&#39;)){DB.atend=[];save();renderAtend();updateBadges();}">🗑 Limpar turno</button>
+        <button class="btn btn-orange" onclick="abrirModal(&#39;mAtend&#39;)">+ Novo Atendimento</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr>
+        <th>#</th><th class="og">Morador</th><th>Cond / Bloco / Unid</th>
+        <th>Tipo</th><th>Locker / Guarita</th><th>Veíc – Placa</th>
+        <th>Visita / CPF</th><th>Obs</th><th>Hora</th><th>✅</th>
+      </tr></thead>
+      <tbody id="bodyAtend"><tr class="empty-row"><td colspan="10">Nenhum atendimento.</td></tr></tbody></table>
+    </div>
+  </div>
+
+</div><!-- /panels -->
+
+<!-- MODAL SÍNDICO -->
+<div class="overlay" id="mSind">
+  <div class="modal">
+    <h3>👔 Nova Demanda de Síndico</h3>
+    <div class="fgrid c2">
+      <div class="field"><label>Nome do Síndico</label><input id="si_n" placeholder="Nome..." data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
+      <div class="field"><label>Condomínio</label><input id="si_c" placeholder="Nome do cond..." data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
+      <div class="field"><label>Tipo</label>
+        <select id="si_t" data-ddg-inputtype="unknown">
+          <option>Informação / Relatório</option><option>Gravação de Imagem</option>
+          <option>Reclamação</option><option>Solicitação de Acesso</option>
+          <option>Problema Técnico</option><option>Outro</option>
+        </select>
+      </div>
+      <div class="field"><label>Contato via</label>
+        <select id="si_ct" data-ddg-inputtype="unknown"><option>WhatsApp</option><option>Telefone</option><option>E-mail</option></select>
+      </div>
+      <div class="field full"><label>Descrição</label><textarea id="si_d" placeholder="O que o síndico solicitou?"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mSind&#39;)">Cancelar</button>
+      <button class="btn btn-red" onclick="salvarSind()">⚠ Registrar — URGENTE</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ATENDIMENTO -->
+<div class="overlay" id="mAtend">
+  <div class="modal">
+    <h3>📋 Novo Atendimento</h3>
+    <div class="fgrid c3">
+      <div class="field"><label>Morador</label><input id="a_m" placeholder="Nome..." data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
+      <div class="field"><label>Cond / Bloco / Unid</label><input id="a_c" placeholder="Ex: Res. Sol / B2 / 304" data-ddg-inputtype="unknown"></div>
+      <div class="field"><label>Tipo</label>
+        <select id="a_t" data-ddg-inputtype="unknown">
+          <option value="">— selecione —</option>
+          <option>Encomenda</option><option>Correspondência</option><option>Delivery</option>
+          <option>Visita</option><option>Prestador de Serviço</option><option>Veículo</option><option>Outro</option>
+        </select>
+      </div>
+      <div class="field"><label>Locker / Guarita</label><input id="a_l" placeholder="Ex: Locker A3" data-ddg-inputtype="unknown"></div>
+      <div class="field"><label>Veíc – Placa</label><input id="a_p" placeholder="ABC-1234" data-ddg-inputtype="unknown"></div>
+      <div class="field"><label>Visita / Prestador / CPF</label><input id="a_v" placeholder="Nome ou CPF" data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
+      <div class="field full"><label>Observações</label><textarea id="a_o" placeholder="..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mAtend&#39;)">Cancelar</button>
+      <button class="btn btn-orange" onclick="salvarAtend()">✅ Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EXPORT -->
+<div class="overlay" id="mExport">
+  <div class="modal">
+    <h3>📤 Resumo do Turno</h3>
+    <div class="field">
+      <label>Copie para passar o plantão:</label>
+      <textarea id="exportTxt" style="min-height:300px;font-family:monospace;font-size:12px;"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mExport&#39;)">Fechar</button>
+      <button class="btn btn-green" onclick="copiar()">📋 Copiar tudo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────
+const DB={tasks:[],sind:[],atend:[],op:'',t1:'',t2:''};
+const KEY='myport_painel_v3';
+function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
+function load(){const r=localStorage.getItem(KEY);if(r)try{Object.assign(DB,JSON.parse(r));}catch(e){}}
+load();
+
+// ── CLOCK ──────────────────────────────────────────
+function tick(){
+  const n=new Date();
+  document.getElementById('clock').textContent=n.toLocaleTimeString('pt-BR');
+  document.getElementById('dataHoje').textContent=n.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+}
+setInterval(tick,1000);tick();
+
+// ── HEADER FIELDS ──────────────────────────────────
+['opName','t1','t2'].forEach(id=>{
+  const el=document.getElementById(id);
+  const key=id==='opName'?'op':id;
+  el.value=DB[key]||'';
+  el.addEventListener('input',()=>{DB[key]=el.value;save();});
+});
+
+// ── TABS ───────────────────────────────────────────
+function switchTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── MODALS ─────────────────────────────────────────
+function abrirModal(id){document.getElementById(id).classList.add('show');}
+function fecharModal(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show');}));
+const g=id=>(document.getElementById(id)?.value||'').trim();
+const cl=(...ids)=>ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+
+// ── UTILS ──────────────────────────────────────────
+const nowStr=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const nowISO=()=>new Date().toISOString();
+const elMin=iso=>Math.floor((Date.now()-new Date(iso))/60000);
+function elapsed(iso){
+  const d=Math.floor((Date.now()-new Date(iso))/1000),m=Math.floor(d/60),s=d%60;
+  return m<60?`${m}m ${s}s`:`${Math.floor(m/60)}h ${m%60}m`;
+}
+function tipoPill(t){
+  const map={
+    'OS':'pill-orange','Cadastro':'pill-blue','Síndico':'pill-red',
+    'Atendimento':'pill-green','Outro':'pill-purple'
+  };
+  return `<span class="pill ${map[t]||'pill-purple'}">${t}</span>`;
+}
+function priorPill(p){
+  if(p==='Alta')return'<span class="pill pill-red">🔴 Alta</span>';
+  if(p==='Média')return'<span class="pill pill-yellow">🟡 Média</span>';
+  return'<span class="pill pill-green">🟢 Baixa</span>';
+}
+function timerCell(iso,status){
+  if(status==='Respondida')return'<span class="pill pill-green">✅</span>';
+  const m=elMin(iso);
+  if(m>=15)return`<span class="timer-urg">🔴 ${elapsed(iso)}</span>`;
+  if(m>=7)return`<span class="timer-warn">🟡 ${elapsed(iso)}</span>`;
+  return`<span class="timer-ok">🟢 ${elapsed(iso)}</span>`;
+}
+
+// ── FILA DE TAREFAS ────────────────────────────────
+let filtroAtivo='';
+function setFiltro(f,btn){
+  filtroAtivo=f;
+  document.querySelectorAll('.prior-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTasks();
+}
+function addTask(){
+  const desc=g('taskInput'); if(!desc){document.getElementById('taskInput').focus();return;}
+  DB.tasks.push({id:Date.now(),desc,tipo:g('taskTipo'),prior:g('taskPrior'),done:false,hora:nowStr(),iso:nowISO()});
+  save();cl('taskInput');renderTasks();updateBadges();updateStats();
+}
+function toggleTask(id){
+  const t=DB.tasks.find(x=>x.id===id); if(t){t.done=!t.done;save();renderTasks();updateBadges();updateStats();}
+}
+function delTask(id){DB.tasks=DB.tasks.filter(x=>x.id!==id);save();renderTasks();updateBadges();updateStats();}
+function limparConcluidas(){
+  if(!DB.tasks.some(t=>t.done))return;
+  if(confirm('Remover todas as tarefas concluídas?')){DB.tasks=DB.tasks.filter(t=>!t.done);save();renderTasks();updateBadges();updateStats();}
+}
+function renderTasks(){
+  const el=document.getElementById('taskList');
+  let list=DB.tasks;
+  if(filtroAtivo==='done') list=list.filter(t=>t.done);
+  else if(filtroAtivo) list=list.filter(t=>!t.done&&t.prior===filtroAtivo);
+  else list=list.filter(t=>!t.done).concat(list.filter(t=>t.done));
+
+  if(!list.length){
+    el.innerHTML='<div class="empty">'+
+      (filtroAtivo?'Nenhuma tarefa neste filtro.':
+      'Nenhuma tarefa ainda.<br>Use a barra acima para capturar tudo que chegar no WhatsApp.')+'</div>';
+    return;
+  }
+  el.innerHTML=list.map(t=>`
+    <div class="task-item ${t.done?'done':''}">
+      <div class="task-check" onclick="toggleTask(${t.id})">${t.done?'✓':''}</div>
+      <div class="task-body">
+        <div class="task-desc">${t.desc}</div>
+        <div class="task-meta">
+          ${tipoPill(t.tipo)} ${priorPill(t.prior)}
+          <span class="task-hora">⏰ ${t.hora}</span>
+          ${t.done?'<span class="pill pill-green" style="font-size:10px">✅ Registrado no sistema</span>':''}
+        </div>
+      </div>
+      <div class="task-actions">
+        <button class="btn btn-sm btn-ghost" onclick="delTask(${t.id})" title="Remover">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function updateStats(){
+  const pend=DB.tasks.filter(t=>!t.done);
+  const row=document.getElementById('statsRow');
+  if(!DB.tasks.length){row.innerHTML='';return;}
+  const alta=pend.filter(t=>t.prior==='Alta').length;
+  const sind=pend.filter(t=>t.tipo==='Síndico').length;
+  row.innerHTML=`
+    <div class="stat og"><div class="n">${pend.length}</div><div class="l">Pendentes</div></div>
+    <div class="stat rd"><div class="n">${alta}</div><div class="l">Alta Prior.</div></div>
+    <div class="stat rd"><div class="n">${sind}</div><div class="l">Síndicos</div></div>
+    <div class="stat gn"><div class="n">${DB.tasks.filter(t=>t.done).length}</div><div class="l">Concluídas</div></div>`;
+}
+
+// ── SÍNDICOS ───────────────────────────────────────
+function salvarSind(){
+  const n=g('si_n'),c=g('si_c'); if(!n||!c){alert('Informe síndico e condomínio.');return;}
+  DB.sind.push({id:Date.now(),nome:n,cond:c,tipo:g('si_t'),contato:g('si_ct'),desc:g('si_d'),status:'Pendente',resp:'',iso:nowISO(),hora:nowStr()});
+  save();fecharModal('mSind');cl('si_n','si_c','si_d');renderSind();updateBadges();
+}
+function updSindStatus(id,v){const i=DB.sind.find(x=>x.id===id);if(i){i.status=v;save();renderSind();updateBadges();}}
+function respSind(id){
+  const i=DB.sind.find(x=>x.id===id);if(!i)return;
+  const r=prompt('Ação tomada / Resposta:',i.resp||'');
+  if(r!==null){i.resp=r;i.status='Respondida';save();renderSind();updateBadges();}
+}
+function delSind(id){if(confirm('Remover?')){DB.sind=DB.sind.filter(x=>x.id!==id);save();renderSind();updateBadges();}}
+function renderSind(){
+  const b=document.getElementById('bodySind');
+  if(!DB.sind.length){b.innerHTML='<tr class="empty-row"><td colspan="8">Nenhuma demanda de síndico.</td></tr>';return;}
+  let urg=false;
+  b.innerHTML=DB.sind.map(s=>{
+    if(s.status!=='Respondida'&&elMin(s.iso)>=15)urg=true;
+    return`<tr>
+      <td><b>${s.nome}</b><br><small style="color:var(--muted)">${s.contato}</small></td>
+      <td>${s.cond}</td><td><span class="pill pill-purple">${s.tipo}</span></td>
+      <td style="max-width:200px;white-space:normal">${s.desc||'—'}</td>
+      <td>${timerCell(s.iso,s.status)}</td>
+      <td><select class="btn btn-sm btn-ghost" onchange="updSindStatus(${s.id},this.value)">
+        <option ${s.status==='Pendente'?'selected':''}>Pendente</option>
+        <option ${s.status==='Em andamento'?'selected':''}>Em andamento</option>
+        <option ${s.status==='Respondida'?'selected':''}>Respondida</option>
+      </select></td>
+      <td style="max-width:150px;white-space:normal">${s.resp||'<span style="color:var(--muted)">—</span>'}</td>
+      <td><div style="display:flex;gap:4px;">
+        <button class="btn btn-sm btn-green" onclick="respSind(${s.id})">✏️</button>
+        <button class="btn btn-sm btn-ghost" onclick="delSind(${s.id})">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('alertSind').classList.toggle('show',urg);
+}
+
+// ── ATENDIMENTO ────────────────────────────────────
+function salvarAtend(){
+  const m=g('a_m'); if(!m&&!g('a_c')&&!g('a_t')){alert('Preencha pelo menos um campo.');return;}
+  DB.atend.push({id:Date.now(),m:g('a_m'),c:g('a_c'),t:g('a_t'),l:g('a_l'),p:g('a_p'),v:g('a_v'),o:g('a_o'),hora:nowStr(),check:false});
+  save();fecharModal('mAtend');cl('a_m','a_c','a_t','a_l','a_p','a_v','a_o');renderAtend();updateBadges();
+}
+function togAtend(id){const i=DB.atend.find(x=>x.id===id);if(i){i.check=!i.check;save();renderAtend();updateBadges();}}
+function delAtend(id){if(confirm('Remover?')){DB.atend=DB.atend.filter(x=>x.id!==id);save();renderAtend();updateBadges();}}
+function renderAtend(){
+  const b=document.getElementById('bodyAtend');
+  if(!DB.atend.length){b.innerHTML='<tr class="empty-row"><td colspan="10">Nenhum atendimento.</td></tr>';return;}
+  b.innerHTML=DB.atend.map((a,i)=>`<tr>
+    <td style="color:var(--muted)">${i+1}</td>
+    <td><b>${a.m||'—'}</b></td><td>${a.c||'—'}</td>
+    <td><span class="pill pill-blue">${a.t||'—'}</span></td>
+    <td>${a.l||'—'}</td><td>${a.p||'—'}</td><td>${a.v||'—'}</td>
+    <td style="max-width:160px;white-space:normal">${a.o||'—'}</td>
+    <td style="color:var(--muted)">${a.hora}</td>
+    <td><div style="display:flex;gap:4px;">
+      <button class="btn btn-sm ${a.check?'btn-green':'btn-ghost'}" onclick="togAtend(${a.id})">${a.check?'✅':'⬜'}</button>
+      <button class="btn btn-sm btn-ghost" onclick="delAtend(${a.id})">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+// ── BADGES ─────────────────────────────────────────
+function updateBadges(){
+  const pF=DB.tasks.filter(t=>!t.done).length;
+  const pS=DB.sind.filter(s=>s.status!=='Respondida').length;
+  const pA=DB.atend.filter(a=>!a.check).length;
+  function set(id,n,cls=''){const e=document.getElementById(id);e.textContent=n;e.className='badge'+(n===0?' zero':'')+(cls?' '+cls:'');}
+  set('bdg-fila',pF);
+  set('bdg-sind',pS);
+  set('bdg-atend',pA,'og');
+  if(DB.sind.some(s=>s.status!=='Respondida'&&elMin(s.iso)>=15)){
+    const b=document.getElementById('bdg-sind');
+    b.style.background='var(--red)';b.style.animation='pulse 1s infinite';
+  }
+}
+
+// ── EXPORT / PASSAGEM DE PLANTÃO ─────────────────
+function exportar(){
+  const op=DB.op||'Operador';
+  const tats=[DB.t1,DB.t2].filter(Boolean).join(' / ')||'—';
+  const data=new Date().toLocaleDateString('pt-BR');
+  const hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  let x=`══════════════════════════\n🔄 PASSAGEM DE PLANTÃO — MYPORT\nOperador saindo: ${op} | Táticos: ${tats}\nData: ${data}  Hora: ${hora}\n══════════════════════════\n\n`;
+  
+  x+=`⚠️ RECADOS PARA O PRÓXIMO LÍDER:\n[ Digite aqui recados importantes, chaves que faltam, etc ]\n\n`;
+
+  const pend=DB.tasks.filter(t=>!t.done);
+  const done=DB.tasks.filter(t=>t.done);
+  
+  x+=`📌 TAREFAS PENDENTES DO SISTEMA (${pend.length})\n${'─'.repeat(26)}\n`;
+  if(!pend.length){x+='Nenhuma pendência na fila rápida.\n';}
+  else{pend.forEach(t=>x+=`  • [${t.prior}] [${t.tipo}] ${t.desc} (${t.hora})\n`);}
+  
+  x+=`\n👔 SÍNDICOS SEM RESPOSTA\n${'─'.repeat(26)}\n`;
+  const sindP=DB.sind.filter(s=>s.status!=='Respondida');
+  if(!sindP.length)x+='Nenhuma demanda de síndico pendente.\n';
+  else sindP.forEach(s=>x+=`• ${s.nome} (${s.cond}) — ${s.tipo}\n  ${s.desc}\n`);
+
+  x+=`\n✅ RESUMO DO QUE FOI FEITO NO TURNO\n${'─'.repeat(26)}\n`;
+  x+=`- Tarefas triadas e registradas: ${done.length}\n`;
+  x+=`- Síndicos respondidos: ${DB.sind.filter(s=>s.status==='Respondida').length}\n`;
+  x+=`- Atendimentos gerais (visitas/entregas): ${DB.atend.length}\n`;
+  
+  x+=`\n══════════════════════════\nFim do turno — ${op}\n`;
+  document.getElementById('exportTxt').value=x;
+  abrirModal('mExport');
+}
+function copiar(){navigator.clipboard.writeText(document.getElementById('exportTxt').value).then(()=>alert('Copiado!'));}
+
+// ── AUTO REFRESH ───────────────────────────────────
+setInterval(()=>{
+  if(document.getElementById('panel-sind').classList.contains('active'))renderSind();
+  updateBadges();
+},15000);
+
+// ── INIT ───────────────────────────────────────────
+renderTasks();renderSind();renderAtend();updateBadges();updateStats();
+</script>
+
+
+</body></html>
