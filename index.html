@@ -153,7 +153,7 @@
       .capture-bar input[type=text]{width:100%;}
     }
   </style>
-<style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,#onetap_google_intermediate_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,.adthrive-auto-injected-player-container,.adthrive[id^="cls-video-container"]:has(.adthrive-auto-injected-player-container),#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style></head>
+</head>
 <body>
 
 <!-- ── HEADER ── -->
@@ -165,17 +165,17 @@
   <div class="header-right">
     <div class="hfield">
       <label>👷 Tático 1</label>
-      <input id="t1" placeholder="Nome do tático 1..." maxlength="25" data-ddg-inputtype="identities.firstName" data-ddg-autofill="true">
+      <input id="t1" placeholder="Nome do tático 1..." maxlength="25">
     </div>
     <div class="hfield">
       <label>👷 Tático 2</label>
-      <input id="t2" placeholder="Tático 2 (se houver)" maxlength="25" data-ddg-inputtype="unknown">
+      <input id="t2" placeholder="Tático 2 (se houver)" maxlength="25">
     </div>
     <div class="hfield">
       <label>Operador</label>
-      <input id="opName" placeholder="Seu nome..." maxlength="30" data-ddg-inputtype="identities.firstName" data-ddg-autofill="true">
+      <input id="opName" placeholder="Seu nome..." maxlength="30">
     </div>
-    <div id="clock">20:47:02</div>
+    <div id="clock">15:13:59</div>
   </div>
 </header>
 
@@ -185,13 +185,16 @@
     📌 Fila de Tarefas <span id="bdg-fila" class="badge zero">0</span>
   </button>
   <button class="tab-btn" onclick="switchTab(&#39;sind&#39;,this)">
-    👔 Síndicos <span id="bdg-sind" class="badge zero">0</span>
+    👔 Síndicos <span id="bdg-sind" class="badge">1</span>
   </button>
   <button class="tab-btn" onclick="switchTab(&#39;atend&#39;,this)">
     📋 Atendimento <span id="bdg-atend" class="badge zero og">0</span>
   </button>
   <button class="tab-btn" onclick="exportar()" style="margin-left:auto;">
     📤 Passagem de Plantão
+  </button>
+  <button class="tab-btn" onclick="gerarRelatorio()">
+    📊 Relatório Diário
   </button>
 </div>
 
@@ -213,15 +216,15 @@
 
     <!-- CAPTURA RÁPIDA -->
     <div class="capture-bar">
-      <input type="text" id="taskInput" placeholder="⚡ O que chegou? Ex: Portão do Res. Sol com defeito — João tático" onkeydown="if(event.key===&#39;Enter&#39;)addTask()" data-ddg-inputtype="unknown">
-      <select id="taskTipo" data-ddg-inputtype="unknown">
+      <input type="text" id="taskInput" placeholder="⚡ O que chegou? Ex: Portão do Res. Sol com defeito — João tático" onkeydown="if(event.key===&#39;Enter&#39;)addTask()">
+      <select id="taskTipo">
         <option value="OS">🔧 OS / Tático</option>
         <option value="Cadastro">📝 Cadastro</option>
         <option value="Síndico">👔 Síndico</option>
         <option value="Atendimento">📋 Atendimento</option>
         <option value="Outro">📌 Outro</option>
       </select>
-      <select id="taskPrior" data-ddg-inputtype="unknown">
+      <select id="taskPrior">
         <option value="Alta">🔴 Alta</option>
         <option value="Média" selected="">🟡 Média</option>
         <option value="Baixa">🟢 Baixa</option>
@@ -259,7 +262,22 @@
         <th class="og">Síndico</th><th>Condomínio</th><th>Tipo</th>
         <th>Descrição</th><th>⏱ Tempo</th><th>Status</th><th>Resposta</th><th>Ações</th>
       </tr></thead>
-      <tbody id="bodySind"><tr class="empty-row"><td colspan="8">Nenhuma demanda de síndico.</td></tr></tbody></table>
+      <tbody id="bodySind"><tr>
+      <td><b>vfvbf</b><br><small style="color:var(--muted)">WhatsApp</small></td>
+      <td>fsvsfbv</td><td><span class="pill pill-purple">Reclamação</span></td>
+      <td style="max-width:200px;white-space:normal">fvfsvsf</td>
+      <td><span class="timer-ok">🟢 0m 0s</span></td>
+      <td><select class="btn btn-sm btn-ghost" onchange="updSindStatus(1788199966636,this.value)">
+        <option selected="">Pendente</option>
+        <option>Em andamento</option>
+        <option>Respondida</option>
+      </select></td>
+      <td style="max-width:150px;white-space:normal"><span style="color:var(--muted)">—</span></td>
+      <td><div style="display:flex;gap:4px;">
+        <button class="btn btn-sm btn-green" onclick="respSind(1788199966636)">✏️</button>
+        <button class="btn btn-sm btn-ghost" onclick="delSind(1788199966636)">🗑</button>
+      </div></td>
+    </tr></tbody></table>
     </div>
   </div>
 
@@ -268,7 +286,7 @@
   ══════════════════════════════════ -->
   <div class="panel" id="panel-atend">
     <div class="sh">
-      <div class="sh-title">📋 Atendimento Diário <small id="dataHoje">sábado, 29 de agosto</small></div>
+      <div class="sh-title">📋 Atendimento Diário <small id="dataHoje">segunda-feira, 31 de agosto</small></div>
       <div class="btn-group">
         <button class="btn btn-ghost btn-sm" onclick="if(confirm(&#39;Limpar turno?&#39;)){DB.atend=[];save();renderAtend();updateBadges();}">🗑 Limpar turno</button>
         <button class="btn btn-orange" onclick="abrirModal(&#39;mAtend&#39;)">+ Novo Atendimento</button>
@@ -291,17 +309,17 @@
   <div class="modal">
     <h3>👔 Nova Demanda de Síndico</h3>
     <div class="fgrid c2">
-      <div class="field"><label>Nome do Síndico</label><input id="si_n" placeholder="Nome..." data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
-      <div class="field"><label>Condomínio</label><input id="si_c" placeholder="Nome do cond..." data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
+      <div class="field"><label>Nome do Síndico</label><input id="si_n" placeholder="Nome..."></div>
+      <div class="field"><label>Condomínio</label><input id="si_c" placeholder="Nome do cond..."></div>
       <div class="field"><label>Tipo</label>
-        <select id="si_t" data-ddg-inputtype="unknown">
+        <select id="si_t">
           <option>Informação / Relatório</option><option>Gravação de Imagem</option>
           <option>Reclamação</option><option>Solicitação de Acesso</option>
           <option>Problema Técnico</option><option>Outro</option>
         </select>
       </div>
       <div class="field"><label>Contato via</label>
-        <select id="si_ct" data-ddg-inputtype="unknown"><option>WhatsApp</option><option>Telefone</option><option>E-mail</option></select>
+        <select id="si_ct"><option>WhatsApp</option><option>Telefone</option><option>E-mail</option></select>
       </div>
       <div class="field full"><label>Descrição</label><textarea id="si_d" placeholder="O que o síndico solicitou?"></textarea></div>
     </div>
@@ -317,18 +335,18 @@
   <div class="modal">
     <h3>📋 Novo Atendimento</h3>
     <div class="fgrid c3">
-      <div class="field"><label>Morador</label><input id="a_m" placeholder="Nome..." data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
-      <div class="field"><label>Cond / Bloco / Unid</label><input id="a_c" placeholder="Ex: Res. Sol / B2 / 304" data-ddg-inputtype="unknown"></div>
+      <div class="field"><label>Morador</label><input id="a_m" placeholder="Nome..."></div>
+      <div class="field"><label>Cond / Bloco / Unid</label><input id="a_c" placeholder="Ex: Res. Sol / B2 / 304"></div>
       <div class="field"><label>Tipo</label>
-        <select id="a_t" data-ddg-inputtype="unknown">
+        <select id="a_t">
           <option value="">— selecione —</option>
           <option>Encomenda</option><option>Correspondência</option><option>Delivery</option>
           <option>Visita</option><option>Prestador de Serviço</option><option>Veículo</option><option>Outro</option>
         </select>
       </div>
-      <div class="field"><label>Locker / Guarita</label><input id="a_l" placeholder="Ex: Locker A3" data-ddg-inputtype="unknown"></div>
-      <div class="field"><label>Veíc – Placa</label><input id="a_p" placeholder="ABC-1234" data-ddg-inputtype="unknown"></div>
-      <div class="field"><label>Visita / Prestador / CPF</label><input id="a_v" placeholder="Nome ou CPF" data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
+      <div class="field"><label>Locker / Guarita</label><input id="a_l" placeholder="Ex: Locker A3"></div>
+      <div class="field"><label>Veíc – Placa</label><input id="a_p" placeholder="ABC-1234"></div>
+      <div class="field"><label>Visita / Prestador / CPF</label><input id="a_v" placeholder="Nome ou CPF"></div>
       <div class="field full"><label>Observações</label><textarea id="a_o" placeholder="..."></textarea></div>
     </div>
     <div class="modal-footer">
@@ -349,6 +367,21 @@
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="fecharModal(&#39;mExport&#39;)">Fechar</button>
       <button class="btn btn-green" onclick="copiar()">📋 Copiar tudo</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RELATÓRIO DIÁRIO -->
+<div class="overlay" id="mRelat">
+  <div class="modal" style="max-width:700px;">
+    <h3>📊 Relatório Diário de Operações</h3>
+    <div class="field">
+      <label>Copie para enviar o relatório:</label>
+      <textarea id="relatTxt" style="min-height:400px;font-family:monospace;font-size:12px;white-space:pre-wrap;"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mRelat&#39;)">Fechar</button>
+      <button class="btn btn-green" onclick="copiarRelat()">📋 Copiar tudo</button>
     </div>
   </div>
 </div>
@@ -595,6 +628,51 @@ function exportar(){
   abrirModal('mExport');
 }
 function copiar(){navigator.clipboard.writeText(document.getElementById('exportTxt').value).then(()=>alert('Copiado!'));}
+
+// ── RELATÓRIO DIÁRIO DE OPERAÇÕES ────────────────
+function gerarRelatorio(){
+  const op=DB.op||'Operador';
+  const tats=[DB.t1,DB.t2].filter(Boolean).join(' / ')||'—';
+  const data=new Date().toLocaleDateString('pt-BR');
+
+  // Puxar apenas tarefas do tipo "OS" para ocorrências
+  const osAll=DB.tasks.filter(t=>t.tipo==='OS');
+  const osPend=osAll.filter(t=>!t.done);
+  const osDone=osAll.filter(t=>t.done);
+
+  // Demandas solucionadas (todas as tarefas concluídas)
+  const allDone=DB.tasks.filter(t=>t.done);
+
+  let r='';
+  r+=`Operador(a) ${op}:\n`;
+  r+=`📝 RELATÓRIO DIÁRIO DE OPERAÇÕES\n\n`;
+  r+=`📅 Data: ${data}  |  Período: \n\n`;
+  r+=`👥 EQUIPE ESCALADA:\n`;
+  r+=`Operadores: \n`;
+  r+=`Tático: ${tats}\n\n`;
+  r+=`🛠️ OCORRÊNCIAS TÉCNICAS E MANUTENÇÃO:\n`;
+  if(!osAll.length){
+    r+=`Nenhuma ocorrência registrada.\n`;
+  } else {
+    osAll.forEach(t=>{
+      r+=`\n${t.desc}`;
+      if(t.done) r+=` ✅`;
+      r+=`\n`;
+    });
+  }
+  r+=`\n\n✅ Demandas solucionadas:\n`;
+  if(!allDone.length){
+    r+=`Nenhuma demanda concluída.\n`;
+  } else {
+    allDone.forEach(t=>{
+      r+=`• [${t.tipo}] ${t.desc} (${t.hora})\n`;
+    });
+  }
+
+  document.getElementById('relatTxt').value=r;
+  abrirModal('mRelat');
+}
+function copiarRelat(){navigator.clipboard.writeText(document.getElementById('relatTxt').value).then(()=>alert('Relatório copiado!'));}
 
 // ── AUTO REFRESH ───────────────────────────────────
 setInterval(()=>{
