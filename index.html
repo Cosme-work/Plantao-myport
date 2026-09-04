@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0105)file:///C:/Users/cosme/.gemini/antigravity/brain/9925eadf-29b9-40dc-b0d3-0ed46e537708/painel-plantao.html -->
-<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel de Plantão — MyPort</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <style>
     :root{
       --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;
@@ -165,30 +167,30 @@
   <div class="header-right">
     <div class="hfield">
       <label>👷 Tático 1</label>
-      <input id="t1" placeholder="Nome do tático 1..." maxlength="25">
+      <input id="t1" placeholder="Nome do tático 1..." maxlength="25"/>
     </div>
     <div class="hfield">
       <label>👷 Tático 2</label>
-      <input id="t2" placeholder="Tático 2 (se houver)" maxlength="25">
+      <input id="t2" placeholder="Tático 2 (se houver)" maxlength="25"/>
     </div>
     <div class="hfield">
       <label>Operador</label>
-      <input id="opName" placeholder="Seu nome..." maxlength="30">
+      <input id="opName" placeholder="Seu nome..." maxlength="30"/>
     </div>
-    <div id="clock">15:13:59</div>
+    <div id="clock">00:00:00</div>
   </div>
 </header>
 
 <!-- ── TABS ── -->
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab(&#39;fila&#39;,this)">
+  <button class="tab-btn active" onclick="switchTab('fila',this)">
     📌 Fila de Tarefas <span id="bdg-fila" class="badge zero">0</span>
   </button>
-  <button class="tab-btn" onclick="switchTab(&#39;sind&#39;,this)">
-    👔 Síndicos <span id="bdg-sind" class="badge">1</span>
+  <button class="tab-btn" onclick="switchTab('sind',this)">
+    👔 Síndicos <span id="bdg-sind" class="badge zero">0</span>
   </button>
-  <button class="tab-btn" onclick="switchTab(&#39;atend&#39;,this)">
-    📋 Atendimento <span id="bdg-atend" class="badge zero og">0</span>
+  <button class="tab-btn" onclick="switchTab('atend',this)">
+    📋 Atendimento <span id="bdg-atend" class="badge og zero">0</span>
   </button>
   <button class="tab-btn" onclick="exportar()" style="margin-left:auto;">
     📤 Passagem de Plantão
@@ -216,7 +218,7 @@
 
     <!-- CAPTURA RÁPIDA -->
     <div class="capture-bar">
-      <input type="text" id="taskInput" placeholder="⚡ O que chegou? Ex: Portão do Res. Sol com defeito — João tático" onkeydown="if(event.key===&#39;Enter&#39;)addTask()">
+      <input type="text" id="taskInput" placeholder="⚡ O que chegou? Ex: Portão do Res. Sol com defeito — João tático" onkeydown="if(event.key==='Enter')addTask()"/>
       <select id="taskTipo">
         <option value="OS">🔧 OS / Tático</option>
         <option value="Cadastro">📝 Cadastro</option>
@@ -226,7 +228,7 @@
       </select>
       <select id="taskPrior">
         <option value="Alta">🔴 Alta</option>
-        <option value="Média" selected="">🟡 Média</option>
+        <option value="Média" selected>🟡 Média</option>
         <option value="Baixa">🟢 Baixa</option>
       </select>
       <button class="btn btn-orange" onclick="addTask()">+ Capturar</button>
@@ -234,14 +236,16 @@
 
     <!-- FILTRO -->
     <div class="prior-bar">
-      <button class="prior-btn active" onclick="setFiltro(&#39;&#39;,this)">Todos</button>
-      <button class="prior-btn" onclick="setFiltro(&#39;Alta&#39;,this)">🔴 Alta</button>
-      <button class="prior-btn" onclick="setFiltro(&#39;Média&#39;,this)">🟡 Média</button>
-      <button class="prior-btn" onclick="setFiltro(&#39;Baixa&#39;,this)">🟢 Baixa</button>
-      <button class="prior-btn" onclick="setFiltro(&#39;done&#39;,this)">✅ Concluídas</button>
+      <button class="prior-btn active" onclick="setFiltro('',this)">Todos</button>
+      <button class="prior-btn" onclick="setFiltro('Alta',this)">🔴 Alta</button>
+      <button class="prior-btn" onclick="setFiltro('Média',this)">🟡 Média</button>
+      <button class="prior-btn" onclick="setFiltro('Baixa',this)">🟢 Baixa</button>
+      <button class="prior-btn" onclick="setFiltro('done',this)">✅ Concluídas</button>
     </div>
 
-    <div class="task-list" id="taskList"><div class="empty">Nenhuma tarefa ainda.<br>Use a barra acima para capturar tudo que chegar no WhatsApp.</div></div>
+    <div class="task-list" id="taskList">
+      <div class="empty">Nenhuma tarefa ainda.<br>Use a barra acima para capturar tudo que chegar no WhatsApp.</div>
+    </div>
   </div>
 
   <!-- ══════════════════════════════════
@@ -250,7 +254,7 @@
   <div class="panel" id="panel-sind">
     <div class="sh">
       <div class="sh-title">👔 Demandas de Síndicos <small>⚠ Prioridade Máxima</small></div>
-      <button class="btn btn-red" onclick="abrirModal(&#39;mSind&#39;)">+ Nova Demanda URGENTE</button>
+      <button class="btn btn-red" onclick="abrirModal('mSind')">+ Nova Demanda URGENTE</button>
     </div>
 
     <div id="alertSind" class="alert">
@@ -262,22 +266,9 @@
         <th class="og">Síndico</th><th>Condomínio</th><th>Tipo</th>
         <th>Descrição</th><th>⏱ Tempo</th><th>Status</th><th>Resposta</th><th>Ações</th>
       </tr></thead>
-      <tbody id="bodySind"><tr>
-      <td><b>vfvbf</b><br><small style="color:var(--muted)">WhatsApp</small></td>
-      <td>fsvsfbv</td><td><span class="pill pill-purple">Reclamação</span></td>
-      <td style="max-width:200px;white-space:normal">fvfsvsf</td>
-      <td><span class="timer-ok">🟢 0m 0s</span></td>
-      <td><select class="btn btn-sm btn-ghost" onchange="updSindStatus(1788199966636,this.value)">
-        <option selected="">Pendente</option>
-        <option>Em andamento</option>
-        <option>Respondida</option>
-      </select></td>
-      <td style="max-width:150px;white-space:normal"><span style="color:var(--muted)">—</span></td>
-      <td><div style="display:flex;gap:4px;">
-        <button class="btn btn-sm btn-green" onclick="respSind(1788199966636)">✏️</button>
-        <button class="btn btn-sm btn-ghost" onclick="delSind(1788199966636)">🗑</button>
-      </div></td>
-    </tr></tbody></table>
+      <tbody id="bodySind">
+        <tr class="empty-row"><td colspan="8">Nenhuma demanda de síndico.</td></tr>
+      </tbody></table>
     </div>
   </div>
 
@@ -286,10 +277,10 @@
   ══════════════════════════════════ -->
   <div class="panel" id="panel-atend">
     <div class="sh">
-      <div class="sh-title">📋 Atendimento Diário <small id="dataHoje">segunda-feira, 31 de agosto</small></div>
+      <div class="sh-title">📋 Atendimento Diário <small id="dataHoje"></small></div>
       <div class="btn-group">
-        <button class="btn btn-ghost btn-sm" onclick="if(confirm(&#39;Limpar turno?&#39;)){DB.atend=[];save();renderAtend();updateBadges();}">🗑 Limpar turno</button>
-        <button class="btn btn-orange" onclick="abrirModal(&#39;mAtend&#39;)">+ Novo Atendimento</button>
+        <button class="btn btn-ghost btn-sm" onclick="if(confirm('Limpar turno?')){DB.atend=[];save();renderAtend();updateBadges();}">🗑 Limpar turno</button>
+        <button class="btn btn-orange" onclick="abrirModal('mAtend')">+ Novo Atendimento</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -298,7 +289,9 @@
         <th>Tipo</th><th>Locker / Guarita</th><th>Veíc – Placa</th>
         <th>Visita / CPF</th><th>Obs</th><th>Hora</th><th>✅</th>
       </tr></thead>
-      <tbody id="bodyAtend"><tr class="empty-row"><td colspan="10">Nenhum atendimento.</td></tr></tbody></table>
+      <tbody id="bodyAtend">
+        <tr class="empty-row"><td colspan="10">Nenhum atendimento ainda.</td></tr>
+      </tbody></table>
     </div>
   </div>
 
@@ -309,8 +302,8 @@
   <div class="modal">
     <h3>👔 Nova Demanda de Síndico</h3>
     <div class="fgrid c2">
-      <div class="field"><label>Nome do Síndico</label><input id="si_n" placeholder="Nome..."></div>
-      <div class="field"><label>Condomínio</label><input id="si_c" placeholder="Nome do cond..."></div>
+      <div class="field"><label>Nome do Síndico</label><input id="si_n" placeholder="Nome..."/></div>
+      <div class="field"><label>Condomínio</label><input id="si_c" placeholder="Nome do cond..."/></div>
       <div class="field"><label>Tipo</label>
         <select id="si_t">
           <option>Informação / Relatório</option><option>Gravação de Imagem</option>
@@ -324,7 +317,7 @@
       <div class="field full"><label>Descrição</label><textarea id="si_d" placeholder="O que o síndico solicitou?"></textarea></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="fecharModal(&#39;mSind&#39;)">Cancelar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('mSind')">Cancelar</button>
       <button class="btn btn-red" onclick="salvarSind()">⚠ Registrar — URGENTE</button>
     </div>
   </div>
@@ -335,8 +328,8 @@
   <div class="modal">
     <h3>📋 Novo Atendimento</h3>
     <div class="fgrid c3">
-      <div class="field"><label>Morador</label><input id="a_m" placeholder="Nome..."></div>
-      <div class="field"><label>Cond / Bloco / Unid</label><input id="a_c" placeholder="Ex: Res. Sol / B2 / 304"></div>
+      <div class="field"><label>Morador</label><input id="a_m" placeholder="Nome..."/></div>
+      <div class="field"><label>Cond / Bloco / Unid</label><input id="a_c" placeholder="Ex: Res. Sol / B2 / 304"/></div>
       <div class="field"><label>Tipo</label>
         <select id="a_t">
           <option value="">— selecione —</option>
@@ -344,13 +337,13 @@
           <option>Visita</option><option>Prestador de Serviço</option><option>Veículo</option><option>Outro</option>
         </select>
       </div>
-      <div class="field"><label>Locker / Guarita</label><input id="a_l" placeholder="Ex: Locker A3"></div>
-      <div class="field"><label>Veíc – Placa</label><input id="a_p" placeholder="ABC-1234"></div>
-      <div class="field"><label>Visita / Prestador / CPF</label><input id="a_v" placeholder="Nome ou CPF"></div>
+      <div class="field"><label>Locker / Guarita</label><input id="a_l" placeholder="Ex: Locker A3"/></div>
+      <div class="field"><label>Veíc – Placa</label><input id="a_p" placeholder="ABC-1234"/></div>
+      <div class="field"><label>Visita / Prestador / CPF</label><input id="a_v" placeholder="Nome ou CPF"/></div>
       <div class="field full"><label>Observações</label><textarea id="a_o" placeholder="..."></textarea></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="fecharModal(&#39;mAtend&#39;)">Cancelar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('mAtend')">Cancelar</button>
       <button class="btn btn-orange" onclick="salvarAtend()">✅ Registrar</button>
     </div>
   </div>
@@ -365,7 +358,7 @@
       <textarea id="exportTxt" style="min-height:300px;font-family:monospace;font-size:12px;"></textarea>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="fecharModal(&#39;mExport&#39;)">Fechar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('mExport')">Fechar</button>
       <button class="btn btn-green" onclick="copiar()">📋 Copiar tudo</button>
     </div>
   </div>
@@ -380,19 +373,63 @@
       <textarea id="relatTxt" style="min-height:400px;font-family:monospace;font-size:12px;white-space:pre-wrap;"></textarea>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="fecharModal(&#39;mRelat&#39;)">Fechar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('mRelat')">Fechar</button>
       <button class="btn btn-green" onclick="copiarRelat()">📋 Copiar tudo</button>
     </div>
   </div>
 </div>
 
 <script>
+// ── FIREBASE DB SETUP ──────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyB29cAMsF3aenU2a9j79u4sb_Eu3qwJx-4",
+  authDomain: "plantao---myport.firebaseapp.com",
+  projectId: "plantao---myport",
+  storageBucket: "plantao---myport.firebasestorage.app",
+  messagingSenderId: "167575793317",
+  appId: "1:167575793317:web:46a189ffa50ac4e1d8674c",
+  databaseURL: "https://plantao---myport-default-rtdb.firebaseio.com"
+};
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const dbRef = firebase.database().ref('plantaoData');
+
 // ── STATE ──────────────────────────────────────────
-const DB={tasks:[],sind:[],atend:[],op:'',t1:'',t2:''};
-const KEY='myport_painel_v3';
-function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
-function load(){const r=localStorage.getItem(KEY);if(r)try{Object.assign(DB,JSON.parse(r));}catch(e){}}
-load();
+const DB = { tasks: [], sind: [], atend: [], op: '', t1: '', t2: '' };
+
+function save() {
+  dbRef.set(DB); // Salva na Nuvem em vez de LocalStorage
+}
+
+dbRef.on('value', (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    Object.assign(DB, {
+      tasks: data.tasks || [],
+      sind: data.sind || [],
+      atend: data.atend || [],
+      op: data.op || '',
+      t1: data.t1 || '',
+      t2: data.t2 || ''
+    });
+    
+    // Atualiza cabeçalho apenas se o usuário não estiver digitando nele
+    ['opName','t1','t2'].forEach(id=>{
+      const el = document.getElementById(id);
+      const key = id==='opName'?'op':id;
+      if (document.activeElement !== el) {
+        el.value = DB[key] || '';
+      }
+    });
+
+    renderTasks();
+    renderSind();
+    renderAtend();
+    updateBadges();
+    updateStats();
+  }
+});
 
 // ── CLOCK ──────────────────────────────────────────
 function tick(){
@@ -681,8 +718,13 @@ setInterval(()=>{
 },15000);
 
 // ── INIT ───────────────────────────────────────────
-renderTasks();renderSind();renderAtend();updateBadges();updateStats();
+// A interface será renderizada automaticamente quando o Firebase carregar os dados.
+// Mas para o primeiro acesso com banco vazio, forçamos um render vazio.
+dbRef.once('value').then(snap => {
+  if(!snap.exists()){
+    renderTasks();renderSind();renderAtend();updateBadges();updateStats();
+  }
+});
 </script>
-
-
-</body></html>
+</body>
+</html>
