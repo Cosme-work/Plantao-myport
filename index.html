@@ -149,14 +149,29 @@
     ::-webkit-scrollbar-track{background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 
-    @media(max-width:650px){
-      .fgrid,.fgrid.c2,.fgrid.c3{grid-template-columns:1fr;}
-      .capture-bar{flex-direction:column;align-items:stretch;}
-      .capture-bar input[type=text]{width:100%;}
-    }
+    /* POST-IT */
+    .postit-btn{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--yellow);color:#333;border:none;border-radius:50%;width:52px;height:52px;font-size:22px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:transform .15s;}
+    .postit-btn:hover{transform:scale(1.1);}
+    .postit{position:fixed;z-index:600;background:#fef08a;border-radius:4px;box-shadow:4px 4px 16px rgba(0,0,0,.35);display:none;flex-direction:column;min-width:240px;max-width:320px;cursor:move;user-select:none;}
+    .postit.show{display:flex;}
+    .postit-header{background:rgba(0,0,0,.12);padding:7px 10px;display:flex;align-items:center;justify-content:space-between;border-radius:4px 4px 0 0;font-size:12px;font-weight:700;color:#444;}
+    .postit-header span{font-size:14px;}
+    .postit textarea{background:transparent;border:none;resize:none;min-height:120px;padding:10px;font-size:13px;color:#333;font-family:inherit;outline:none;line-height:1.5;}
+    .postit-close{background:none;border:none;cursor:pointer;font-size:16px;color:#666;padding:0 2px;line-height:1;}
+    .postit-close:hover{color:#c00;}
   </style>
 </head>
 <body>
+
+<!-- POST-IT FLUTUANTE -->
+<button class="postit-btn" onclick="togglePostit()" title="Post-it">🗒️</button>
+<div class="postit" id="postitBox">
+  <div class="postit-header" id="postitHandle">
+    <span>🗒️ Post-it</span>
+    <button class="postit-close" onclick="togglePostit()">✕</button>
+  </div>
+  <textarea id="postitTxt" placeholder="Anote aqui um lembrete rápido..." oninput="DB.postit=this.value;save();" onblur="DB.postit=this.value;save();"></textarea>
+</div>
 
 <!-- ── HEADER ── -->
 <header>
@@ -170,8 +185,8 @@
       <input id="t1" placeholder="Nome do tático 1..." maxlength="25"/>
     </div>
     <div class="hfield">
-      <label>👷 Tático 2</label>
-      <input id="t2" placeholder="Tático 2 (se houver)" maxlength="25"/>
+      <label>🔧 Técnico</label>
+      <input id="t2" placeholder="Nome do técnico..." maxlength="25"/>
     </div>
     <div class="hfield">
       <label>Operador</label>
@@ -190,7 +205,7 @@
     👔 Síndicos <span id="bdg-sind" class="badge zero">0</span>
   </button>
   <button class="tab-btn" onclick="switchTab('atend',this)">
-    📋 Atendimento <span id="bdg-atend" class="badge og zero">0</span>
+    🏢 Proc. Interno / Equipe <span id="bdg-atend" class="badge og zero">0</span>
   </button>
   <button class="tab-btn" onclick="exportar()" style="margin-left:auto;">
     📤 Passagem de Plantão
@@ -210,7 +225,7 @@
     <div class="stats" id="statsRow"></div>
 
     <div class="sh">
-      <div class="sh-title">📌 Fila de Tarefas <small>capture qualquer coisa que chegou no WhatsApp</small></div>
+      <div class="sh-title">📌 Fila de Tarefas <small>Organização de Demandas</small></div>
       <div class="btn-group">
         <button class="btn btn-ghost btn-sm" onclick="limparConcluidas()">🗑 Limpar concluídas</button>
       </div>
@@ -273,29 +288,46 @@
   </div>
 
   <!-- ══════════════════════════════════
-       ABA 3 — ATENDIMENTO DIÁRIO
+       ABA 3 — PROCEDIMENTO INTERNO / EQUIPE
   ══════════════════════════════════ -->
   <div class="panel" id="panel-atend">
     <div class="sh">
-      <div class="sh-title">📋 Atendimento Diário <small id="dataHoje"></small></div>
+      <div class="sh-title">🏢 Procedimento Interno / Equipe <small id="dataHoje"></small></div>
       <div class="btn-group">
-        <button class="btn btn-ghost btn-sm" onclick="if(confirm('Limpar turno?')){DB.atend=[];save();renderAtend();updateBadges();}">🗑 Limpar turno</button>
-        <button class="btn btn-orange" onclick="abrirModal('mAtend')">+ Novo Atendimento</button>
+        <button class="btn btn-orange" onclick="abrirModal('mProc')">+ Nova Instrução da Supervisão</button>
       </div>
     </div>
-    <div class="table-wrap">
-      <table><thead><tr>
-        <th>#</th><th class="og">Morador</th><th>Cond / Bloco / Unid</th>
-        <th>Tipo</th><th>Locker / Guarita</th><th>Veíc – Placa</th>
-        <th>Visita / CPF</th><th>Obs</th><th>Hora</th><th>✅</th>
-      </tr></thead>
-      <tbody id="bodyAtend">
-        <tr class="empty-row"><td colspan="10">Nenhum atendimento ainda.</td></tr>
-      </tbody></table>
+    <div class="task-list" id="procList">
+      <div class="empty">Nenhuma instrução registrada ainda.<br>Clique em "+ Nova Instrução da Supervisão" para adicionar.</div>
     </div>
   </div>
 
 </div><!-- /panels -->
+
+<!-- MODAL PROC INTERNO -->
+<div class="overlay" id="mProc">
+  <div class="modal">
+    <h3>🏢 Nova Instrução da Supervisão</h3>
+    <div class="fgrid">
+      <div class="field">
+        <label>📅 Data</label>
+        <input id="p_data" type="date"/>
+      </div>
+      <div class="field full">
+        <label>📌 Título / Assunto</label>
+        <input id="p_titulo" placeholder="Ex: Acesso de Motoqueiros, Novo Procedimento de Visita..."/>
+      </div>
+      <div class="field full">
+        <label>📝 Instrução completa</label>
+        <textarea id="p_desc" placeholder="Descreva a instrução recebida da supervisão..." style="min-height:120px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal('mProc')">Cancelar</button>
+      <button class="btn btn-orange" onclick="salvarProc()">✅ Registrar Instrução</button>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL SÍNDICO -->
 <div class="overlay" id="mSind">
@@ -326,7 +358,7 @@
 <!-- MODAL ATENDIMENTO -->
 <div class="overlay" id="mAtend">
   <div class="modal">
-    <h3>📋 Novo Atendimento</h3>
+    <h3>🏢 Nova Demanda Operacional / Equipe</h3>
     <div class="fgrid c3">
       <div class="field"><label>Morador</label><input id="a_m" placeholder="Nome..."/></div>
       <div class="field"><label>Cond / Bloco / Unid</label><input id="a_c" placeholder="Ex: Res. Sol / B2 / 304"/></div>
@@ -359,6 +391,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="fecharModal('mExport')">Fechar</button>
+      <button class="btn btn-ghost" onclick="imprimirPDF()">🖨️ Salvar PDF</button>
       <button class="btn btn-green" onclick="copiar()">📋 Copiar tudo</button>
     </div>
   </div>
@@ -396,7 +429,7 @@ if (!firebase.apps.length) {
 const dbRef = firebase.database().ref('plantaoData');
 
 // ── STATE ──────────────────────────────────────────
-const DB = { tasks: [], sind: [], atend: [], op: '', t1: '', t2: '' };
+const DB = { tasks: [], sind: [], atend: [], procs: [], op: '', t1: '', t2: '', postit: '', relatorio: '' };
 
 function save() {
   dbRef.set(DB); // Salva na Nuvem em vez de LocalStorage
@@ -411,7 +444,10 @@ dbRef.on('value', (snapshot) => {
       atend: data.atend || [],
       op: data.op || '',
       t1: data.t1 || '',
-      t2: data.t2 || ''
+      t2: data.t2 || '',
+      procs: data.procs || [],
+      postit: data.postit || '',
+      relatorio: data.relatorio || ''
     });
     
     // Atualiza cabeçalho apenas se o usuário não estiver digitando nele
@@ -423,9 +459,13 @@ dbRef.on('value', (snapshot) => {
       }
     });
 
+    // Atualiza post-it se não estiver sendo editado
+    const ptEl=document.getElementById('postitTxt');
+    if(ptEl && document.activeElement!==ptEl) ptEl.value=DB.postit||'';
+
     renderTasks();
     renderSind();
-    renderAtend();
+    renderProc();
     updateBadges();
     updateStats();
   }
@@ -456,7 +496,14 @@ function switchTab(tab,btn){
 }
 
 // ── MODALS ─────────────────────────────────────────
-function abrirModal(id){document.getElementById(id).classList.add('show');}
+function abrirModal(id){
+  document.getElementById(id).classList.add('show');
+  // Pré-preencher data de hoje no modal de Proc Interno
+  if(id==='mProc'){
+    const hoje=new Date().toISOString().split('T')[0];
+    document.getElementById('p_data').value=hoje;
+  }
+}
 function fecharModal(id){document.getElementById(id).classList.remove('show');}
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show');}));
 const g=id=>(document.getElementById(id)?.value||'').trim();
@@ -521,7 +568,7 @@ function renderTasks(){
   if(!list.length){
     el.innerHTML='<div class="empty">'+
       (filtroAtivo?'Nenhuma tarefa neste filtro.':
-      'Nenhuma tarefa ainda.<br>Use a barra acima para capturar tudo que chegar no WhatsApp.')+'</div>';
+      'Nenhuma tarefa ainda.<br>Use a barra acima para capturar tudo que chegar para registro.')+'</div>';
     return;
   }
   el.innerHTML=list.map(t=>`
@@ -618,11 +665,47 @@ function renderAtend(){
   </tr>`).join('');
 }
 
+// ── PROC INTERNO / EQUIPE ──────────────────────────
+function salvarProc(){
+  const titulo=g('p_titulo'),desc=g('p_desc');
+  if(!titulo&&!desc){alert('Preencha pelo menos o título ou a instrução.');return;}
+  const data=document.getElementById('p_data').value||new Date().toISOString().split('T')[0];
+  // Formatar data para pt-BR
+  const [y,m,d]=data.split('-');
+  const dataFmt=`${d}/${m}/${y}`;
+  DB.procs.unshift({id:Date.now(),data:dataFmt,titulo:titulo||'Sem título',desc:desc||''});
+  save();fecharModal('mProc');cl('p_titulo','p_desc');document.getElementById('p_data').value='';
+  renderProc();updateBadges();
+}
+function delProc(id){
+  if(confirm('Remover esta instrução?')){DB.procs=DB.procs.filter(p=>p.id!==id);save();renderProc();updateBadges();}
+}
+function renderProc(){
+  const el=document.getElementById('procList');if(!el)return;
+  if(!DB.procs||!DB.procs.length){
+    el.innerHTML='<div class="empty">Nenhuma instrução registrada ainda.<br>Clique em "+ Nova Instrução da Supervisão" para adicionar.</div>';
+    return;
+  }
+  el.innerHTML=DB.procs.map(p=>`
+    <div class="task-item">
+      <div class="task-body">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+          <span class="pill pill-blue">📅 ${p.data}</span>
+          <span style="font-size:14px;font-weight:700;">📌 ${p.titulo}</span>
+        </div>
+        <div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;">${p.desc||''}</div>
+      </div>
+      <div class="task-actions">
+        <button class="btn btn-sm btn-ghost" onclick="delProc(${p.id})" title="Remover">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
 // ── BADGES ─────────────────────────────────────────
 function updateBadges(){
   const pF=DB.tasks.filter(t=>!t.done).length;
   const pS=DB.sind.filter(s=>s.status!=='Respondida').length;
-  const pA=DB.atend.filter(a=>!a.check).length;
+  const pA=DB.procs?DB.procs.length:0;
   function set(id,n,cls=''){const e=document.getElementById(id);e.textContent=n;e.className='badge'+(n===0?' zero':'')+(cls?' '+cls:'');}
   set('bdg-fila',pF);
   set('bdg-sind',pS);
@@ -641,16 +724,16 @@ function exportar(){
   const hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   let x=`══════════════════════════\n🔄 PASSAGEM DE PLANTÃO — MYPORT\nOperador saindo: ${op} | Táticos: ${tats}\nData: ${data}  Hora: ${hora}\n══════════════════════════\n\n`;
   
-  x+=`⚠️ RECADOS PARA O PRÓXIMO LÍDER:\n[ Digite aqui recados importantes, chaves que faltam, etc ]\n\n`;
+  x+=`⚠️ RECADOS PARA O PRÓXIMO TURNO:\n[ Digite aqui recados importantes, chaves que faltam, etc ]\n\n`;
 
   const pend=DB.tasks.filter(t=>!t.done);
   const done=DB.tasks.filter(t=>t.done);
   
   x+=`📌 TAREFAS PENDENTES DO SISTEMA (${pend.length})\n${'─'.repeat(26)}\n`;
   if(!pend.length){x+='Nenhuma pendência na fila rápida.\n';}
-  else{pend.forEach(t=>x+=`  • [${t.prior}] [${t.tipo}] ${t.desc} (${t.hora})\n`);}
+  else{pend.forEach(t=>x+=`  • ${t.desc}\n`);}
   
-  x+=`\n👔 SÍNDICOS SEM RESPOSTA\n${'─'.repeat(26)}\n`;
+  x+=`\n👔 SÍNDICOS ALTA PRIORIDADE\n${'─'.repeat(26)}\n`;
   const sindP=DB.sind.filter(s=>s.status!=='Respondida');
   if(!sindP.length)x+='Nenhuma demanda de síndico pendente.\n';
   else sindP.forEach(s=>x+=`• ${s.nome} (${s.cond}) — ${s.tipo}\n  ${s.desc}\n`);
@@ -658,13 +741,22 @@ function exportar(){
   x+=`\n✅ RESUMO DO QUE FOI FEITO NO TURNO\n${'─'.repeat(26)}\n`;
   x+=`- Tarefas triadas e registradas: ${done.length}\n`;
   x+=`- Síndicos respondidos: ${DB.sind.filter(s=>s.status==='Respondida').length}\n`;
-  x+=`- Atendimentos gerais (visitas/entregas): ${DB.atend.length}\n`;
+  x+=`- Procedimentos internos registrados: ${DB.atend.length}\n`;
   
   x+=`\n══════════════════════════\nFim do turno — ${op}\n`;
   document.getElementById('exportTxt').value=x;
   abrirModal('mExport');
 }
 function copiar(){navigator.clipboard.writeText(document.getElementById('exportTxt').value).then(()=>alert('Copiado!'));}
+function imprimirPDF(){
+  const conteudo=document.getElementById('exportTxt').value;
+  const win=window.open('','_blank');
+  win.document.write(`<html><head><title>Passagem de Plantão</title>
+  <style>body{font-family:monospace;font-size:13px;padding:30px;white-space:pre-wrap;}</style></head>
+  <body>${conteudo.replace(/</g,'&lt;')}</body></html>`);
+  win.document.close();
+  win.print();
+}
 
 // ── RELATÓRIO DIÁRIO DE OPERAÇÕES ────────────────
 function gerarRelatorio(){
@@ -674,39 +766,50 @@ function gerarRelatorio(){
 
   // Puxar apenas tarefas do tipo "OS" para ocorrências
   const osAll=DB.tasks.filter(t=>t.tipo==='OS');
-  const osPend=osAll.filter(t=>!t.done);
-  const osDone=osAll.filter(t=>t.done);
 
   // Demandas solucionadas (todas as tarefas concluídas)
   const allDone=DB.tasks.filter(t=>t.done);
 
+  // Se já existe conteúdo salvo no banco, usá-lo; senão gerar template
+  const textoSalvo=DB.relatorio||'';
+
   let r='';
-  r+=`Operador(a) ${op}:\n`;
-  r+=`📝 RELATÓRIO DIÁRIO DE OPERAÇÕES\n\n`;
-  r+=`📅 Data: ${data}  |  Período: \n\n`;
-  r+=`👥 EQUIPE ESCALADA:\n`;
-  r+=`Operadores: \n`;
-  r+=`Tático: ${tats}\n\n`;
-  r+=`🛠️ OCORRÊNCIAS TÉCNICAS E MANUTENÇÃO:\n`;
-  if(!osAll.length){
-    r+=`Nenhuma ocorrência registrada.\n`;
+  if(textoSalvo){
+    r=textoSalvo;
   } else {
-    osAll.forEach(t=>{
-      r+=`\n${t.desc}`;
-      if(t.done) r+=` ✅`;
-      r+=`\n`;
-    });
-  }
-  r+=`\n\n✅ Demandas solucionadas:\n`;
-  if(!allDone.length){
-    r+=`Nenhuma demanda concluída.\n`;
-  } else {
-    allDone.forEach(t=>{
-      r+=`• [${t.tipo}] ${t.desc} (${t.hora})\n`;
-    });
+    r+=`Operador(a) ${op}:\n`;
+    r+=`📝 RELATÓRIO DIÁRIO DE OPERAÇÕES\n\n`;
+    r+=`📅 Data: ${data}  |  Período: \n\n`;
+    r+=`👥 EQUIPE ESCALADA:\n`;
+    r+=`Operadores: \n`;
+    r+=`Tático: ${tats}\n\n`;
+    r+=`🛠️ OCORRÊNCIAS TÉCNICAS E MANUTENÇÃO:\n`;
+    if(!osAll.length){
+      r+=`Nenhuma ocorrência registrada.\n`;
+    } else {
+      osAll.forEach(t=>{
+        r+=`\n${t.desc}`;
+        if(t.done) r+=` ✅`;
+        r+=`\n`;
+      });
+    }
+    r+=`\n\n✅ Demandas solucionadas:\n`;
+    if(!allDone.length){
+      r+=`Nenhuma demanda concluída.\n`;
+    } else {
+      allDone.forEach(t=>{
+        r+=`• ${t.desc}\n`;
+      });
+    }
   }
 
   document.getElementById('relatTxt').value=r;
+
+  // Auto-salvar no Firebase toda vez que o usuário clicar fora do campo
+  const el=document.getElementById('relatTxt');
+  el.oninput=()=>{DB.relatorio=el.value; save();};
+  el.onblur=()=>{DB.relatorio=el.value; save();};
+
   abrirModal('mRelat');
 }
 function copiarRelat(){navigator.clipboard.writeText(document.getElementById('relatTxt').value).then(()=>alert('Relatório copiado!'));}
@@ -716,6 +819,36 @@ setInterval(()=>{
   if(document.getElementById('panel-sind').classList.contains('active'))renderSind();
   updateBadges();
 },15000);
+
+// ── POST-IT ────────────────────────────────────────
+function togglePostit(){
+  const box=document.getElementById('postitBox');
+  box.classList.toggle('show');
+  if(box.classList.contains('show')){
+    // Posicionar no canto inferior direito se ainda sem posição
+    if(!box.style.bottom){
+      box.style.bottom='80px';
+      box.style.right='24px';
+    }
+  }
+}
+// Arrastar post-it
+(function(){
+  const el=document.getElementById('postitBox');
+  const handle=document.getElementById('postitHandle');
+  let ox=0,oy=0,mx=0,my=0;
+  handle.addEventListener('mousedown',e=>{
+    e.preventDefault();
+    mx=e.clientX;my=e.clientY;
+    document.onmouseup=()=>{document.onmouseup=null;document.onmousemove=null;};
+    document.onmousemove=e=>{
+      ox=mx-e.clientX;oy=my-e.clientY;mx=e.clientX;my=e.clientY;
+      el.style.top=(el.offsetTop-oy)+'px';
+      el.style.left=(el.offsetLeft-ox)+'px';
+      el.style.bottom='auto';el.style.right='auto';
+    };
+  });
+})();
 
 // ── INIT ───────────────────────────────────────────
 // A interface será renderizada automaticamente quando o Firebase carregar os dados.
