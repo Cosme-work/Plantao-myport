@@ -12,61 +12,83 @@
       --border:#2e3350;--text:#e0e4f0;--muted:#7a80a0;
       --orange:#ff7300;--green:#0bb423;--red:#e03535;
       --yellow:#f0c040;--blue:#3a8fdd;--purple:#8a5cf7;--r:8px;
+      --sidebar:240px;
     }
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;min-height:100vh;}
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;height:100vh;display:flex;overflow:hidden;}
 
-    /* HEADER */
-    header{background:var(--surface);border-bottom:2px solid var(--orange);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;}
-    .logo{display:flex;align-items:center;gap:10px;}
-    .logo-badge{background:var(--orange);color:#fff;font-weight:800;font-size:13px;padding:4px 10px;border-radius:6px;letter-spacing:1px;}
-    .logo-text{font-size:15px;font-weight:600;}
-    .header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-    #clock{font-size:24px;font-weight:800;color:var(--orange);font-variant-numeric:tabular-nums;}
-    .hfield{display:flex;flex-direction:column;gap:3px;}
+    /* ── SIDEBAR ── */
+    .sidebar{width:var(--sidebar);min-width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+    .sb-top{padding:18px 16px 12px;border-bottom:1px solid var(--border);}
+    .sb-logo{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+    .sb-logo-badge{background:var(--orange);color:#fff;font-weight:800;font-size:12px;padding:3px 9px;border-radius:6px;letter-spacing:1px;}
+    .sb-logo-text{font-size:13px;font-weight:600;color:var(--muted);}
+    .sb-operator{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .sb-avatar{width:38px;height:38px;border-radius:50%;background:var(--orange);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .sb-op-info{flex:1;min-width:0;}
+    .sb-op-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .sb-op-role{font-size:11px;color:var(--muted);}
+    #clock{font-size:26px;font-weight:800;color:var(--orange);font-variant-numeric:tabular-nums;letter-spacing:1px;text-align:center;padding:8px 0 4px;}
+    #dataHoje{font-size:11px;color:var(--muted);text-align:center;margin-bottom:4px;text-transform:capitalize;}
+
+    /* Inputs do cabeçalho dentro da sidebar */
+    .hfield{display:flex;flex-direction:column;gap:3px;margin-bottom:6px;}
     .hfield label{font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.5px;}
-    .hfield input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;font-weight:600;padding:4px 9px;outline:none;width:130px;}
+    .hfield input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;font-weight:600;padding:5px 9px;outline:none;width:100%;}
     .hfield input:focus{border-color:var(--orange);}
     .hfield input::placeholder{color:var(--muted);font-weight:400;}
 
-    /* TABS */
-    .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;gap:4px;overflow-x:auto;}
-    .tab-btn{padding:12px 20px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;font-weight:700;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
-    .tab-btn:hover{color:var(--text);}
-    .tab-btn.active{color:var(--orange);border-bottom-color:var(--orange);}
-    .badge{display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;font-size:10px;font-weight:800;border-radius:10px;min-width:18px;height:18px;padding:0 5px;margin-left:6px;vertical-align:middle;}
+    /* ── SIDEBAR NAV ── */
+    .sb-nav{flex:1;overflow-y:auto;padding:8px 0;}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;color:var(--muted);font-size:13px;font-weight:600;width:100%;background:none;border-right:none;border-top:none;border-bottom:none;text-align:left;}
+    .nav-item:hover{background:var(--surface2);color:var(--text);}
+    .nav-item.active{border-left-color:var(--orange);color:var(--orange);background:rgba(255,115,0,.08);}
+    .nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
+    .nav-label{flex:1;}
+    .badge{display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;font-size:10px;font-weight:800;border-radius:10px;min-width:18px;height:18px;padding:0 5px;}
     .badge.zero{display:none;}
     .badge.og{background:var(--orange);}
 
-    /* PANELS */
-    .panels{padding:20px;max-width:1300px;margin:0 auto;}
+    /* ── SIDEBAR BOTTOM ACTIONS ── */
+    .sb-actions{padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;}
+    .sb-action-btn{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;width:100%;}
+    .sb-action-btn:hover{border-color:var(--orange);color:var(--orange);}
+
+    /* ── MAIN AREA ── */
+    .main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+    /* ── TOPBAR ── */
+    .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;min-height:56px;}
+    .topbar-title{font-size:16px;font-weight:700;}
+    .topbar-title small{font-size:12px;font-weight:400;color:var(--muted);margin-left:8px;}
+    .topbar-right{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+
+    /* ── CONTENT AREA ── */
+    .content{flex:1;overflow-y:auto;padding:16px 20px;}
+
+    /* ── CAPTURE BAR (bottom fixed) ── */
+    .capture-wrap{background:var(--surface);border-top:1px solid var(--border);padding:10px 16px;flex-shrink:0;}
+    .capture-bar{display:flex;gap:8px;align-items:center;}
+    .capture-bar input[type=text]{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:9px 16px;font-size:14px;outline:none;}
+    .capture-bar input[type=text]:focus{border-color:var(--orange);}
+    .capture-bar input::placeholder{color:var(--muted);}
+    .capture-bar select{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--r);padding:8px 10px;font-size:12px;outline:none;cursor:pointer;}
+    .capture-bar select:focus{border-color:var(--orange);}
+
+    /* ── PANELS ── */
     .panel{display:none;}
     .panel.active{display:block;}
 
-    /* SECTION HEADER */
-    .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
-    .sh-title{font-size:18px;font-weight:700;}
-    .sh-title small{font-size:13px;font-weight:400;color:var(--muted);margin-left:8px;}
+    /* ── STATS ROW ── */
+    .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px;}
+    .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;}
+    .stat .n{font-size:28px;font-weight:800;}
+    .stat .l{font-size:10px;text-transform:uppercase;color:var(--muted);margin-top:2px;letter-spacing:.5px;}
+    .stat.og .n{color:var(--orange);}
+    .stat.rd .n{color:var(--red);}
+    .stat.gn .n{color:var(--green);}
 
-    /* BUTTONS */
-    .btn{padding:8px 16px;border-radius:var(--r);border:none;cursor:pointer;font-weight:700;font-size:13px;transition:opacity .15s;}
-    .btn:hover{opacity:.82;}
-    .btn-orange{background:var(--orange);color:#fff;}
-    .btn-green{background:var(--green);color:#fff;}
-    .btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
-    .btn-red{background:var(--red);color:#fff;}
-    .btn-sm{padding:4px 10px;font-size:12px;}
-    .btn-group{display:flex;gap:8px;flex-wrap:wrap;}
-
-    /* QUICK CAPTURE BAR */
-    .capture-bar{display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:16px;flex-wrap:wrap;}
-    .capture-bar input[type=text]{flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:9px 12px;font-size:14px;outline:none;}
-    .capture-bar input[type=text]:focus{border-color:var(--orange);}
-    .capture-bar input::placeholder{color:var(--muted);}
-    .capture-bar select{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:9px 10px;font-size:13px;outline:none;cursor:pointer;}
-    .capture-bar select:focus{border-color:var(--orange);}
-
-    /* TASK LIST */
+    /* ── TASK LIST ── */
     .task-list{display:flex;flex-direction:column;gap:8px;}
     .task-item{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;transition:background .15s;}
     .task-item.done{opacity:.45;background:transparent;}
@@ -81,7 +103,7 @@
     .task-hora{font-size:11px;color:var(--muted);}
     .task-actions{display:flex;gap:4px;margin-left:auto;flex-shrink:0;}
 
-    /* PILLS */
+    /* ── PILLS ── */
     .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
     .pill-red{background:rgba(224,53,53,.2);color:#ff6b6b;border:1px solid rgba(224,53,53,.4);}
     .pill-orange{background:rgba(255,115,0,.2);color:var(--orange);border:1px solid rgba(255,115,0,.4);}
@@ -90,15 +112,15 @@
     .pill-blue{background:rgba(58,143,221,.2);color:#6eb8ff;border:1px solid rgba(58,143,221,.4);}
     .pill-purple{background:rgba(138,92,247,.2);color:#b394ff;border:1px solid rgba(138,92,247,.4);}
 
-    /* PRIORITY BAR */
+    /* ── FILTER BAR ── */
     .prior-bar{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
     .prior-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;font-size:12px;font-weight:700;transition:all .15s;}
     .prior-btn:hover,.prior-btn.active{background:var(--surface2);color:var(--text);border-color:var(--orange);}
 
-    /* EMPTY */
+    /* ── EMPTY ── */
     .empty{text-align:center;color:var(--muted);padding:40px 20px;font-style:italic;font-size:14px;}
 
-    /* TABLE */
+    /* ── TABLE ── */
     .table-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);}
     table{width:100%;border-collapse:collapse;font-size:13px;}
     thead{background:var(--surface2);}
@@ -109,17 +131,17 @@
     tr:hover td{background:rgba(255,115,0,.04);}
     .empty-row td{text-align:center;color:var(--muted);padding:30px;font-style:italic;}
 
-    /* TIMER */
+    /* ── TIMER ── */
     .timer-ok{color:var(--green);font-weight:700;}
     .timer-warn{color:var(--yellow);font-weight:700;}
     .timer-urg{color:var(--red);font-weight:700;animation:pulse 1s infinite;}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-    /* ALERT */
+    /* ── ALERT ── */
     .alert{background:rgba(224,53,53,.15);border:1px solid var(--red);border-radius:var(--r);padding:12px 16px;margin-bottom:14px;display:none;align-items:center;gap:10px;font-weight:700;color:#ff6b6b;}
     .alert.show{display:flex;}
 
-    /* MODAL */
+    /* ── MODAL ── */
     .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;}
     .overlay.show{display:flex;}
     .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;width:90%;max-width:640px;display:flex;flex-direction:column;gap:14px;max-height:88vh;overflow-y:auto;}
@@ -136,26 +158,32 @@
     .field textarea{resize:vertical;min-height:70px;}
     .field select option{background:var(--surface2);}
 
-    /* STATS */
-    .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:18px;}
-    .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;}
-    .stat .n{font-size:30px;font-weight:800;}
-    .stat .l{font-size:11px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
-    .stat.og .n{color:var(--orange);}
-    .stat.rd .n{color:var(--red);}
-    .stat.gn .n{color:var(--green);}
+    /* ── BUTTONS ── */
+    .btn{padding:7px 14px;border-radius:var(--r);border:none;cursor:pointer;font-weight:700;font-size:13px;transition:opacity .15s;}
+    .btn:hover{opacity:.82;}
+    .btn-orange{background:var(--orange);color:#fff;}
+    .btn-green{background:var(--green);color:#fff;}
+    .btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+    .btn-red{background:var(--red);color:#fff;}
+    .btn-sm{padding:4px 10px;font-size:12px;}
+    .btn-group{display:flex;gap:8px;flex-wrap:wrap;}
 
+    /* ── SECTION HEADER ── */
+    .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+    .sh-title{font-size:16px;font-weight:700;}
+    .sh-title small{font-size:12px;font-weight:400;color:var(--muted);margin-left:8px;}
+
+    /* ── SCROLLBAR ── */
     ::-webkit-scrollbar{width:5px;height:5px;}
     ::-webkit-scrollbar-track{background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 
-    /* POST-IT */
-    .postit-btn{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--yellow);color:#333;border:none;border-radius:50%;width:52px;height:52px;font-size:22px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:transform .15s;}
+    /* ── POST-IT ── */
+    .postit-btn{position:fixed;bottom:80px;right:20px;z-index:500;background:var(--yellow);color:#333;border:none;border-radius:50%;width:46px;height:46px;font-size:20px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:transform .15s;}
     .postit-btn:hover{transform:scale(1.1);}
-    .postit{position:fixed;z-index:600;background:#fef08a;border-radius:4px;box-shadow:4px 4px 16px rgba(0,0,0,.35);display:none;flex-direction:column;min-width:240px;max-width:320px;cursor:move;user-select:none;}
+    .postit{position:fixed;z-index:600;background:#fef08a;border-radius:6px;box-shadow:4px 4px 16px rgba(0,0,0,.35);display:none;flex-direction:column;min-width:260px;max-width:340px;cursor:move;user-select:none;}
     .postit.show{display:flex;}
-    .postit-header{background:rgba(0,0,0,.12);padding:7px 10px;display:flex;align-items:center;justify-content:space-between;border-radius:4px 4px 0 0;font-size:12px;font-weight:700;color:#444;}
-    .postit-header span{font-size:14px;}
+    .postit-header{background:rgba(0,0,0,.12);padding:7px 10px;display:flex;align-items:center;justify-content:space-between;border-radius:6px 6px 0 0;font-size:12px;font-weight:700;color:#444;}
     .postit textarea{background:transparent;border:none;resize:none;min-height:80px;padding:10px;font-size:13px;font-weight:700;color:#333;font-family:inherit;outline:none;line-height:1.5;overflow:hidden;width:100%;}
     .postit-close{background:none;border:none;cursor:pointer;font-size:16px;color:#666;padding:0 2px;line-height:1;}
     .postit-close:hover{color:#c00;}
@@ -170,189 +198,221 @@
     <span>🗒️ Post-it</span>
     <button class="postit-close" onclick="togglePostit()">✕</button>
   </div>
-  <textarea id="postitTxt" placeholder="Anote aqui um lembrete rápido..." oninput="DB.postit=this.value;save();" onblur="DB.postit=this.value;save();"></textarea>
+  <textarea id="postitTxt" placeholder="Anote um lembrete rápido..." oninput="DB.postit=this.value;save();" onblur="DB.postit=this.value;save();"></textarea>
 </div>
 
-<!-- ── HEADER ── -->
-<header>
-  <div class="logo">
-    <span class="logo-badge">MYPORT</span>
-    <span class="logo-text">Painel de Plantão</span>
-  </div>
-  <div class="header-right">
-    <div class="hfield">
-      <label>👷 Tático 1</label>
-      <input id="t1" placeholder="Nome do tático 1..." maxlength="25"/>
+<!-- ══════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sb-top">
+    <div class="sb-logo">
+      <span class="sb-logo-badge">MYPORT</span>
+      <span class="sb-logo-text">Painel de Plantão</span>
     </div>
-    <div class="hfield">
-      <label>🔧 Técnico</label>
-      <input id="t2" placeholder="Nome do técnico..." maxlength="25"/>
-    </div>
-    <div class="hfield">
-      <label>Operador</label>
-      <input id="opName" placeholder="Seu nome..." maxlength="30"/>
+    <div class="sb-operator">
+      <div class="sb-avatar" id="sbAvatar">OP</div>
+      <div class="sb-op-info">
+        <div class="sb-op-name" id="sbOpName">Operador</div>
+        <div class="sb-op-role">Portaria Remota</div>
+      </div>
     </div>
     <div id="clock">00:00:00</div>
+    <div id="dataHoje"></div>
+    <div style="margin-top:10px;">
+      <div class="hfield"><label>👤 Operador</label><input id="opName" placeholder="Seu nome..." maxlength="30"/></div>
+      <div class="hfield"><label>👷 Tático 1</label><input id="t1" placeholder="Nome do tático..." maxlength="25"/></div>
+      <div class="hfield"><label>🔧 Técnico</label><input id="t2" placeholder="Nome do técnico..." maxlength="25"/></div>
+    </div>
   </div>
-</header>
 
-<!-- ── TABS ── -->
-<div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('fila',this)">
-    📌 Fila de Tarefas <span id="bdg-fila" class="badge zero">0</span>
-  </button>
-  <button class="tab-btn" onclick="switchTab('sind',this)">
-    👔 Síndicos <span id="bdg-sind" class="badge zero">0</span>
-  </button>
-  <button class="tab-btn" onclick="switchTab('atend',this)">
-    🏢 Proc. Interno / Equipe <span id="bdg-atend" class="badge og zero">0</span>
-  </button>
-  <button class="tab-btn" onclick="exportar()" style="margin-left:auto;">
-    📤 Passagem de Plantão
-  </button>
-  <button class="tab-btn" onclick="gerarRelatorio()">
-    📊 Relatório Diário
-  </button>
-  <button class="tab-btn" onclick="switchTab('sug',this)">
-    💡 Sugestões
-  </button>
-  <button class="tab-btn" onclick="switchTab('port',this)">
-    🏛️ Portaria Física <span id="bdg-port" class="badge og zero">0</span>
-  </button>
-</div>
+  <nav class="sb-nav">
+    <button class="nav-item active" onclick="switchTab('fila',this)">
+      <span class="nav-icon">📌</span>
+      <span class="nav-label">Fila de Tarefas</span>
+      <span id="bdg-fila" class="badge zero">0</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('sind',this)">
+      <span class="nav-icon">👔</span>
+      <span class="nav-label">Síndicos</span>
+      <span id="bdg-sind" class="badge zero">0</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('atend',this)">
+      <span class="nav-icon">🏢</span>
+      <span class="nav-label">Proc. Interno / Equipe</span>
+      <span id="bdg-atend" class="badge og zero">0</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('sug',this)">
+      <span class="nav-icon">💡</span>
+      <span class="nav-label">Sugestões</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('port',this)">
+      <span class="nav-icon">🏛️</span>
+      <span class="nav-label">Portaria Física</span>
+      <span id="bdg-port" class="badge og zero">0</span>
+    </button>
+  </nav>
 
-<div class="panels">
+  <div class="sb-actions">
+    <button class="sb-action-btn" onclick="exportar()">📤 Passagem de Plantão</button>
+    <button class="sb-action-btn" onclick="gerarRelatorio()">📊 Relatório Diário</button>
+  </div>
+</aside>
 
-  <!-- ══════════════════════════════════
-       ABA 1 — FILA DE TAREFAS
-  ══════════════════════════════════ -->
-  <div class="panel active" id="panel-fila">
+<!-- ══════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════ -->
+<div class="main">
 
-    <div class="stats" id="statsRow"></div>
-
-    <div class="sh">
-      <div class="sh-title">📌 Fila de Tarefas <small>Organização de Demandas</small></div>
-      <div class="btn-group">
+  <!-- ── ABA 1: FILA DE TAREFAS ── -->
+  <div id="panel-fila" class="panel active" style="display:flex;flex-direction:column;height:100%;">
+    <div class="topbar">
+      <div class="topbar-title">📌 Fila de Tarefas <small>Organização de Demandas</small></div>
+      <div class="topbar-right">
+        <div class="prior-bar" style="margin:0;">
+          <button class="prior-btn active" onclick="setFiltro('',this)">Todos</button>
+          <button class="prior-btn" onclick="setFiltro('Alta',this)">🔴 Alta</button>
+          <button class="prior-btn" onclick="setFiltro('Média',this)">🟡 Média</button>
+          <button class="prior-btn" onclick="setFiltro('Baixa',this)">🟢 Baixa</button>
+          <button class="prior-btn" onclick="setFiltro('done',this)">✅ Concluídas</button>
+        </div>
         <button class="btn btn-ghost btn-sm" onclick="limparConcluidas()">🗑 Limpar concluídas</button>
       </div>
     </div>
-
-    <!-- CAPTURA RÁPIDA -->
-    <div class="capture-bar">
-      <input type="text" id="taskInput" placeholder="⚡ O que chegou? Ex: Portão do Res. Sol com defeito — João tático" onkeydown="if(event.key==='Enter')addTask()"/>
-      <select id="taskTipo">
-        <option value="OS">🔧 OS / Tático</option>
-        <option value="Cadastro">📝 Cadastro</option>
-        <option value="Síndico">👔 Síndico</option>
-        <option value="Atendimento">📋 Atendimento</option>
-        <option value="Outro">📌 Outro</option>
-      </select>
-      <select id="taskPrior">
-        <option value="Alta">🔴 Alta</option>
-        <option value="Média" selected>🟡 Média</option>
-        <option value="Baixa">🟢 Baixa</option>
-      </select>
-      <button class="btn btn-orange" onclick="addTask()">+ Capturar</button>
-    </div>
-
-    <!-- FILTRO -->
-    <div class="prior-bar">
-      <button class="prior-btn active" onclick="setFiltro('',this)">Todos</button>
-      <button class="prior-btn" onclick="setFiltro('Alta',this)">🔴 Alta</button>
-      <button class="prior-btn" onclick="setFiltro('Média',this)">🟡 Média</button>
-      <button class="prior-btn" onclick="setFiltro('Baixa',this)">🟢 Baixa</button>
-      <button class="prior-btn" onclick="setFiltro('done',this)">✅ Concluídas</button>
-    </div>
-
-    <div class="task-list" id="taskList">
-      <div class="empty">Nenhuma tarefa ainda.<br>Use a barra acima para capturar tudo que chegar no WhatsApp.</div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════
-       ABA 2 — SÍNDICOS
-  ══════════════════════════════════ -->
-  <div class="panel" id="panel-sind">
-    <div class="sh">
-      <div class="sh-title">👔 Demandas de Síndicos <small>⚠ Prioridade Máxima</small></div>
-      <button class="btn btn-red" onclick="abrirModal('mSind')">+ Nova Demanda URGENTE</button>
-    </div>
-
-    <div id="alertSind" class="alert">
-      🚨 ATENÇÃO — Síndico(s) sem resposta há mais de 15 minutos!
-    </div>
-
-    <div class="table-wrap">
-      <table><thead><tr>
-        <th class="og">Síndico</th><th>Condomínio</th><th>Tipo</th>
-        <th>Descrição</th><th>⏱ Tempo</th><th>Status</th><th>Resposta</th><th>Ações</th>
-      </tr></thead>
-      <tbody id="bodySind">
-        <tr class="empty-row"><td colspan="8">Nenhuma demanda de síndico.</td></tr>
-      </tbody></table>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════
-       ABA 3 — PROCEDIMENTO INTERNO / EQUIPE
-  ══════════════════════════════════ -->
-  <div class="panel" id="panel-atend">
-    <div class="sh">
-      <div class="sh-title">🏢 Procedimento Interno / Equipe <small id="dataHoje"></small></div>
-      <div class="btn-group">
-        <button class="btn btn-orange" onclick="abrirModal('mProc')">+ Nova Instrução da Supervisão</button>
+    <div class="content" style="flex:1;">
+      <div class="stats" id="statsRow"></div>
+      <div class="task-list" id="taskList">
+        <div class="empty">Nenhuma tarefa ainda.<br>Use a barra abaixo para capturar tudo que chegar para registro.</div>
       </div>
     </div>
-    <div class="task-list" id="procList">
-      <div class="empty">Nenhuma instrução registrada ainda.<br>Clique em "+ Nova Instrução da Supervisão" para adicionar.</div>
+    <div class="capture-wrap">
+      <div class="capture-bar">
+        <span style="font-size:18px;color:var(--orange);">⚡</span>
+        <input type="text" id="taskInput" placeholder="Descreva a demanda recebida..." onkeydown="if(event.key==='Enter')addTask()"/>
+        <select id="taskTipo">
+          <option value="OS">🔧 OS / Tático</option>
+          <option value="Cadastro">📝 Cadastro</option>
+          <option value="Síndico">👔 Síndico</option>
+          <option value="Atendimento">📋 Atendimento</option>
+          <option value="Outro">📌 Outro</option>
+        </select>
+        <select id="taskPrior">
+          <option value="Alta">🔴 Alta</option>
+          <option value="Média" selected>🟡 Média</option>
+          <option value="Baixa">🟢 Baixa</option>
+        </select>
+        <button class="btn btn-orange" onclick="addTask()">+ Capturar</button>
+      </div>
     </div>
   </div>
-  <!-- ══════════════════════════════════
-       ABA 4 — SUGESTÕES
-  ══════════════════════════════════ -->
-  <div class="panel" id="panel-sug">
-    <div class="sh">
-      <div class="sh-title">💡 Sugestões à Supervisão <small>registre ideias de melhoria operacional</small></div>
+
+  <!-- ── ABA 2: SÍNDICOS ── -->
+  <div id="panel-sind" class="panel" style="display:none;flex-direction:column;height:100%;">
+    <div class="topbar">
+      <div class="topbar-title">👔 Demandas de Síndicos <small>⚠ Prioridade Máxima</small></div>
+      <button class="btn btn-red" onclick="abrirModal('mSind')">+ Nova Demanda URGENTE</button>
     </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;">
-      <p style="color:var(--muted);font-size:12px;margin-bottom:10px;">📌 Use este espaço para redigir sugestões de implementação ou melhorias operacionais para apresentar à supervisão. O texto é editável e salvo automaticamente.</p>
+    <div class="content">
+      <div id="alertSind" class="alert">🚨 ATENÇÃO — Síndico(s) sem resposta há mais de 15 minutos!</div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th class="og">Síndico</th><th>Condomínio</th><th>Tipo</th>
+          <th>Descrição</th><th>⏱ Tempo</th><th>Status</th><th>Resposta</th><th>Ações</th>
+        </tr></thead>
+        <tbody id="bodySind">
+          <tr class="empty-row"><td colspan="8">Nenhuma demanda de síndico.</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ABA 3: PROC. INTERNO / EQUIPE ── -->
+  <div id="panel-atend" class="panel" style="display:none;flex-direction:column;height:100%;">
+    <div class="topbar">
+      <div class="topbar-title">🏢 Procedimento Interno / Equipe <small>instruções da supervisão</small></div>
+      <button class="btn btn-orange" onclick="abrirModal('mProc')">+ Nova Instrução da Supervisão</button>
+    </div>
+    <div class="content">
+      <div class="task-list" id="procList">
+        <div class="empty">Nenhuma instrução registrada ainda.<br>Clique em "+ Nova Instrução da Supervisão" para adicionar.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ABA 4: SUGESTÕES ── -->
+  <div id="panel-sug" class="panel" style="display:none;flex-direction:column;height:100%;">
+    <div class="topbar">
+      <div class="topbar-title">💡 Sugestões à Supervisão <small>ideias de melhoria operacional</small></div>
+    </div>
+    <div class="content">
+      <p style="color:var(--muted);font-size:12px;margin-bottom:12px;">📌 Use este espaço para redigir sugestões de implementação ou melhorias operacionais para apresentar à supervisão. O texto é editável e salvo automaticamente na nuvem.</p>
       <textarea id="sugTxt"
         placeholder="Ex: Sugestão — Implementar registro fotográfico de veículos na entrada do condomínio para maior controle de acesso..."
-        style="width:100%;min-height:420px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:14px;line-height:1.8;padding:14px;resize:vertical;outline:none;font-family:inherit;"
+        style="width:100%;min-height:420px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:14px;line-height:1.8;padding:14px;resize:vertical;outline:none;font-family:inherit;"
         oninput="DB.sugestao=this.value;save();"
         onblur="DB.sugestao=this.value;save();"
       ></textarea>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════
-       ABA 5 — PORTARIA FÍSICA
-  ══════════════════════════════════ -->
-  <div class="panel" id="panel-port">
-    <div class="sh">
-      <div class="sh-title">🏛️ Portaria Física <small>escala dos porteiros por condomínio</small></div>
+  <!-- ── ABA 5: PORTARIA FÍSICA ── -->
+  <div id="panel-port" class="panel" style="display:none;flex-direction:column;height:100%;">
+    <div class="topbar">
+      <div class="topbar-title">🏛️ Portaria Física <small>escala dos porteiros por condomínio</small></div>
       <button class="btn btn-orange" onclick="abrirModal('mPort')">+ Novo Condomínio</button>
     </div>
-    <div class="task-list" id="portList">
-      <div class="empty">Nenhum condomínio cadastrado ainda.<br>Clique em "+ Novo Condomínio" para adicionar.</div>
+    <div class="content">
+      <div class="task-list" id="portList">
+        <div class="empty">Nenhum condomínio cadastrado ainda.<br>Clique em "+ Novo Condomínio" para adicionar.</div>
+      </div>
     </div>
   </div>
 
-</div><!-- /panels -->
+</div><!-- /main -->
+
+<!-- ══════════════════════════════════════════
+     MODAIS
+══════════════════════════════════════════ -->
+
+<!-- MODAL PASSAGEM DE PLANTÃO -->
+<div class="overlay" id="mExport">
+  <div class="modal" style="max-width:700px;">
+    <h3>📤 Passagem de Plantão</h3>
+    <div class="field">
+      <label>Copie para passar o plantão:</label>
+      <textarea id="exportTxt" style="min-height:300px;font-family:monospace;font-size:12px;"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal('mExport')">Fechar</button>
+      <button class="btn btn-ghost" onclick="imprimirPDF()">🖨️ Salvar PDF</button>
+      <button class="btn btn-green" onclick="copiar()">📋 Copiar tudo</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RELATÓRIO DIÁRIO -->
+<div class="overlay" id="mRelat">
+  <div class="modal" style="max-width:700px;">
+    <h3>📊 Relatório Diário de Operações</h3>
+    <div class="field">
+      <label>Copie para enviar o relatório:</label>
+      <textarea id="relatTxt" style="min-height:400px;font-family:monospace;font-size:12px;white-space:pre-wrap;"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal('mRelat')">Fechar</button>
+      <button class="btn btn-ghost" onclick="DB.relatorio='';gerarRelatorio()">🔄 Regenerar</button>
+      <button class="btn btn-green" onclick="copiarRelat()">📋 Copiar tudo</button>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL PORTARIA FÍSICA -->
 <div class="overlay" id="mPort">
   <div class="modal">
     <h3>🏛️ Cadastrar Condomínio — Portaria Física</h3>
     <div class="fgrid">
-      <div class="field full">
-        <label>🏢 Nome do Condomínio</label>
-        <input id="pt_nome" placeholder="Ex: Condomínio Arboris"/>
-      </div>
-      <div class="field full">
-        <label>📅 Escala do Porteiro (dias e horários)</label>
-        <textarea id="pt_escala" placeholder="Ex: Seg a Sex: 08:17h às 18h&#10;Sáb e Dom: 08h às 12h" style="min-height:100px;"></textarea>
-      </div>
+      <div class="field full"><label>🏢 Nome do Condomínio</label><input id="pt_nome" placeholder="Ex: Condomínio Arboris"/></div>
+      <div class="field full"><label>📅 Escala do Porteiro</label><textarea id="pt_escala" placeholder="Ex: Seg a Sex: 08:17h às 18h&#10;Sáb e Dom: 08h às 12h" style="min-height:100px;"></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="fecharModal('mPort')">Cancelar</button>
@@ -366,18 +426,9 @@
   <div class="modal">
     <h3>🏢 Nova Instrução da Supervisão</h3>
     <div class="fgrid">
-      <div class="field">
-        <label>📅 Data</label>
-        <input id="p_data" type="date"/>
-      </div>
-      <div class="field full">
-        <label>📌 Título / Assunto</label>
-        <input id="p_titulo" placeholder="Ex: Acesso de Motoqueiros, Novo Procedimento de Visita..."/>
-      </div>
-      <div class="field full">
-        <label>📝 Instrução completa</label>
-        <textarea id="p_desc" placeholder="Descreva a instrução recebida da supervisão..." style="min-height:120px;"></textarea>
-      </div>
+      <div class="field"><label>📅 Data</label><input id="p_data" type="date"/></div>
+      <div class="field full"><label>📌 Título / Assunto</label><input id="p_titulo" placeholder="Ex: Acesso de Motoqueiros..."/></div>
+      <div class="field full"><label>📝 Instrução completa</label><textarea id="p_desc" placeholder="Descreva a instrução recebida da supervisão..." style="min-height:120px;"></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="fecharModal('mProc')">Cancelar</button>
@@ -412,64 +463,6 @@
   </div>
 </div>
 
-<!-- MODAL ATENDIMENTO -->
-<div class="overlay" id="mAtend">
-  <div class="modal">
-    <h3>🏢 Nova Demanda Operacional / Equipe</h3>
-    <div class="fgrid c3">
-      <div class="field"><label>Morador</label><input id="a_m" placeholder="Nome..."/></div>
-      <div class="field"><label>Cond / Bloco / Unid</label><input id="a_c" placeholder="Ex: Res. Sol / B2 / 304"/></div>
-      <div class="field"><label>Tipo</label>
-        <select id="a_t">
-          <option value="">— selecione —</option>
-          <option>Encomenda</option><option>Correspondência</option><option>Delivery</option>
-          <option>Visita</option><option>Prestador de Serviço</option><option>Veículo</option><option>Outro</option>
-        </select>
-      </div>
-      <div class="field"><label>Locker / Guarita</label><input id="a_l" placeholder="Ex: Locker A3"/></div>
-      <div class="field"><label>Veíc – Placa</label><input id="a_p" placeholder="ABC-1234"/></div>
-      <div class="field"><label>Visita / Prestador / CPF</label><input id="a_v" placeholder="Nome ou CPF"/></div>
-      <div class="field full"><label>Observações</label><textarea id="a_o" placeholder="..."></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="fecharModal('mAtend')">Cancelar</button>
-      <button class="btn btn-orange" onclick="salvarAtend()">✅ Registrar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL EXPORT -->
-<div class="overlay" id="mExport">
-  <div class="modal">
-    <h3>📤 Resumo do Turno</h3>
-    <div class="field">
-      <label>Copie para passar o plantão:</label>
-      <textarea id="exportTxt" style="min-height:300px;font-family:monospace;font-size:12px;"></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="fecharModal('mExport')">Fechar</button>
-      <button class="btn btn-ghost" onclick="imprimirPDF()">🖨️ Salvar PDF</button>
-      <button class="btn btn-green" onclick="copiar()">📋 Copiar tudo</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL RELATÓRIO DIÁRIO -->
-<div class="overlay" id="mRelat">
-  <div class="modal" style="max-width:700px;">
-    <h3>📊 Relatório Diário de Operações</h3>
-    <div class="field">
-      <label>Copie para enviar o relatório:</label>
-      <textarea id="relatTxt" style="min-height:400px;font-family:monospace;font-size:12px;white-space:pre-wrap;"></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="fecharModal('mRelat')">Fechar</button>
-      <button class="btn btn-ghost" onclick="DB.relatorio='';gerarRelatorio()">🔄 Regenerar</button>
-      <button class="btn btn-green" onclick="copiarRelat()">📋 Copiar tudo</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ── FIREBASE DB SETUP ──────────────────────────────
 const firebaseConfig = {
@@ -481,47 +474,33 @@ const firebaseConfig = {
   appId: "1:167575793317:web:46a189ffa50ac4e1d8674c",
   databaseURL: "https://plantao---myport-default-rtdb.firebaseio.com"
 };
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const dbRef = firebase.database().ref('plantaoData');
 
 // ── STATE ──────────────────────────────────────────
-const DB = { tasks: [], sind: [], atend: [], procs: [], ports: [], op: '', t1: '', t2: '', postit: '', relatorio: '', sugestao: '' };
+const DB = { tasks:[], sind:[], atend:[], procs:[], ports:[], op:'', t1:'', t2:'', postit:'', relatorio:'', sugestao:'' };
 
-function save() {
-  dbRef.set(DB); // Salva na Nuvem em vez de LocalStorage
-}
+function save(){ dbRef.set(DB); }
 
-dbRef.on('value', (snapshot) => {
+dbRef.on('value', snapshot => {
   const data = snapshot.val();
   if (data) {
     Object.assign(DB, {
-      tasks: data.tasks || [],
-      sind: data.sind || [],
-      atend: data.atend || [],
-      op: data.op || '',
-      t1: data.t1 || '',
-      t2: data.t2 || '',
-      procs: data.procs || [],
-      ports: data.ports || [],
-      postit: data.postit || '',
-      relatorio: data.relatorio || '',
-      sugestao: data.sugestao || ''
+      tasks: data.tasks||[], sind: data.sind||[], atend: data.atend||[],
+      procs: data.procs||[], ports: data.ports||[],
+      op: data.op||'', t1: data.t1||'', t2: data.t2||'',
+      postit: data.postit||'', relatorio: data.relatorio||'', sugestao: data.sugestao||''
     });
-
     ['opName','t1','t2'].forEach(id=>{
-      const el = document.getElementById(id);
-      const key = id==='opName'?'op':id;
-      if (document.activeElement !== el) el.value = DB[key] || '';
+      const el=document.getElementById(id);
+      const key=id==='opName'?'op':id;
+      if(document.activeElement!==el) el.value=DB[key]||'';
     });
-
+    updateSbAvatar();
     const ptEl=document.getElementById('postitTxt');
-    if(ptEl && document.activeElement!==ptEl) ptEl.value=DB.postit||'';
-
+    if(ptEl&&document.activeElement!==ptEl) ptEl.value=DB.postit||'';
     const sgEl=document.getElementById('sugTxt');
-    if(sgEl && document.activeElement!==sgEl) sgEl.value=DB.sugestao||'';
-
+    if(sgEl&&document.activeElement!==sgEl) sgEl.value=DB.sugestao||'';
     renderTasks(); renderSind(); renderProc(); renderPort();
     updateBadges(); updateStats();
   }
@@ -533,28 +512,37 @@ function tick(){
   document.getElementById('clock').textContent=n.toLocaleTimeString('pt-BR');
   document.getElementById('dataHoje').textContent=n.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
 }
-setInterval(tick,1000);tick();
+setInterval(tick,1000); tick();
+
+// ── SIDEBAR AVATAR ──────────────────────────────────
+function updateSbAvatar(){
+  const name=DB.op||'OP';
+  const initials=name.trim().split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('sbAvatar').textContent=initials||'OP';
+  document.getElementById('sbOpName').textContent=DB.op||'Operador';
+}
 
 // ── HEADER FIELDS ──────────────────────────────────
 ['opName','t1','t2'].forEach(id=>{
   const el=document.getElementById(id);
   const key=id==='opName'?'op':id;
   el.value=DB[key]||'';
-  el.addEventListener('input',()=>{DB[key]=el.value;save();});
+  el.addEventListener('input',()=>{DB[key]=el.value;save();updateSbAvatar();});
 });
 
 // ── TABS ───────────────────────────────────────────
 function switchTab(tab,btn){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+tab).classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>{p.classList.remove('active');p.style.display='none';});
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  const panel=document.getElementById('panel-'+tab);
+  panel.classList.add('active');
+  panel.style.display='flex';
   btn.classList.add('active');
 }
 
 // ── MODALS ─────────────────────────────────────────
 function abrirModal(id){
   document.getElementById(id).classList.add('show');
-  // Pré-preencher data de hoje no modal de Proc Interno
   if(id==='mProc'){
     const hoje=new Date().toISOString().split('T')[0];
     document.getElementById('p_data').value=hoje;
@@ -574,10 +562,7 @@ function elapsed(iso){
   return m<60?`${m}m ${s}s`:`${Math.floor(m/60)}h ${m%60}m`;
 }
 function tipoPill(t){
-  const map={
-    'OS':'pill-orange','Cadastro':'pill-blue','Síndico':'pill-red',
-    'Atendimento':'pill-green','Outro':'pill-purple'
-  };
+  const map={'OS':'pill-orange','Cadastro':'pill-blue','Síndico':'pill-red','Atendimento':'pill-green','Outro':'pill-purple'};
   return `<span class="pill ${map[t]||'pill-purple'}">${t}</span>`;
 }
 function priorPill(p){
@@ -614,17 +599,19 @@ function limparConcluidas(){
   if(!DB.tasks.some(t=>t.done))return;
   if(confirm('Remover todas as tarefas concluídas?')){DB.tasks=DB.tasks.filter(t=>!t.done);save();renderTasks();updateBadges();updateStats();}
 }
+function editTask(id){
+  const t=DB.tasks.find(t=>t.id===id);if(!t)return;
+  const novo=prompt('Editar tarefa:',t.desc);
+  if(novo!==null&&novo.trim()){t.desc=novo.trim();save();renderTasks();}
+}
 function renderTasks(){
   const el=document.getElementById('taskList');
   let list=DB.tasks;
   if(filtroAtivo==='done') list=list.filter(t=>t.done);
   else if(filtroAtivo) list=list.filter(t=>!t.done&&t.prior===filtroAtivo);
   else list=list.filter(t=>!t.done).concat(list.filter(t=>t.done));
-
   if(!list.length){
-    el.innerHTML='<div class="empty">'+
-      (filtroAtivo?'Nenhuma tarefa neste filtro.':
-      'Nenhuma tarefa ainda.<br>Use a barra acima para capturar tudo que chegar para registro.')+'</div>';
+    el.innerHTML='<div class="empty">'+(filtroAtivo?'Nenhuma tarefa neste filtro.':'Nenhuma tarefa ainda.<br>Use a barra abaixo para capturar tudo que chegar para registro.')+'</div>';
     return;
   }
   el.innerHTML=list.map(t=>`
@@ -644,7 +631,6 @@ function renderTasks(){
       </div>
     </div>`).join('');
 }
-
 function updateStats(){
   const pend=DB.tasks.filter(t=>!t.done);
   const row=document.getElementById('statsRow');
@@ -652,6 +638,7 @@ function updateStats(){
   const alta=pend.filter(t=>t.prior==='Alta').length;
   const sind=pend.filter(t=>t.tipo==='Síndico').length;
   row.innerHTML=`
+    <div class="stat og"><div class="n">${DB.tasks.length}</div><div class="l">Registradas</div></div>
     <div class="stat og"><div class="n">${pend.length}</div><div class="l">Pendentes</div></div>
     <div class="stat rd"><div class="n">${alta}</div><div class="l">Alta Prior.</div></div>
     <div class="stat rd"><div class="n">${sind}</div><div class="l">Síndicos</div></div>
@@ -697,37 +684,11 @@ function renderSind(){
   document.getElementById('alertSind').classList.toggle('show',urg);
 }
 
-// ── ATENDIMENTO ────────────────────────────────────
-function salvarAtend(){
-  const m=g('a_m'); if(!m&&!g('a_c')&&!g('a_t')){alert('Preencha pelo menos um campo.');return;}
-  DB.atend.push({id:Date.now(),m:g('a_m'),c:g('a_c'),t:g('a_t'),l:g('a_l'),p:g('a_p'),v:g('a_v'),o:g('a_o'),hora:nowStr(),check:false});
-  save();fecharModal('mAtend');cl('a_m','a_c','a_t','a_l','a_p','a_v','a_o');renderAtend();updateBadges();
-}
-function togAtend(id){const i=DB.atend.find(x=>x.id===id);if(i){i.check=!i.check;save();renderAtend();updateBadges();}}
-function delAtend(id){if(confirm('Remover?')){DB.atend=DB.atend.filter(x=>x.id!==id);save();renderAtend();updateBadges();}}
-function renderAtend(){
-  const b=document.getElementById('bodyAtend');
-  if(!DB.atend.length){b.innerHTML='<tr class="empty-row"><td colspan="10">Nenhum atendimento.</td></tr>';return;}
-  b.innerHTML=DB.atend.map((a,i)=>`<tr>
-    <td style="color:var(--muted)">${i+1}</td>
-    <td><b>${a.m||'—'}</b></td><td>${a.c||'—'}</td>
-    <td><span class="pill pill-blue">${a.t||'—'}</span></td>
-    <td>${a.l||'—'}</td><td>${a.p||'—'}</td><td>${a.v||'—'}</td>
-    <td style="max-width:160px;white-space:normal">${a.o||'—'}</td>
-    <td style="color:var(--muted)">${a.hora}</td>
-    <td><div style="display:flex;gap:4px;">
-      <button class="btn btn-sm ${a.check?'btn-green':'btn-ghost'}" onclick="togAtend(${a.id})">${a.check?'✅':'⬜'}</button>
-      <button class="btn btn-sm btn-ghost" onclick="delAtend(${a.id})">🗑</button>
-    </div></td>
-  </tr>`).join('');
-}
-
 // ── PROC INTERNO / EQUIPE ──────────────────────────
 function salvarProc(){
   const titulo=g('p_titulo'),desc=g('p_desc');
   if(!titulo&&!desc){alert('Preencha pelo menos o título ou a instrução.');return;}
   const data=document.getElementById('p_data').value||new Date().toISOString().split('T')[0];
-  // Formatar data para pt-BR
   const [y,m,d]=data.split('-');
   const dataFmt=`${d}/${m}/${y}`;
   DB.procs.unshift({id:Date.now(),data:dataFmt,titulo:titulo||'Sem título',desc:desc||''});
@@ -756,132 +717,6 @@ function renderProc(){
         <button class="btn btn-sm btn-ghost" onclick="delProc(${p.id})" title="Remover">🗑</button>
       </div>
     </div>`).join('');
-}
-
-// ── BADGES ─────────────────────────────────────────
-function updateBadges(){
-  const pF=DB.tasks.filter(t=>!t.done).length;
-  const pS=DB.sind.filter(s=>s.status!=='Respondida').length;
-  const pA=DB.procs?DB.procs.length:0;
-  function set(id,n,cls=''){const e=document.getElementById(id);e.textContent=n;e.className='badge'+(n===0?' zero':'')+(cls?' '+cls:'');}
-  set('bdg-fila',pF);
-  set('bdg-sind',pS);
-  set('bdg-atend',pA,'og');
-  if(DB.sind.some(s=>s.status!=='Respondida'&&elMin(s.iso)>=15)){
-    const b=document.getElementById('bdg-sind');
-    b.style.background='var(--red)';b.style.animation='pulse 1s infinite';
-  }
-}
-
-// ── EXPORT / PASSAGEM DE PLANTÃO ─────────────────
-function exportar(){
-  const op=DB.op||'Operador';
-  const tats=[DB.t1,DB.t2].filter(Boolean).join(' / ')||'—';
-  const data=new Date().toLocaleDateString('pt-BR');
-  const hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  let x=`══════════════════════════\n🔄 PASSAGEM DE PLANTÃO — MYPORT\nOperador saindo: ${op} | Táticos: ${tats}\nData: ${data}  Hora: ${hora}\n══════════════════════════\n\n`;
-  
-  x+=`⚠️ RECADOS PARA O PRÓXIMO TURNO:\n[ Digite aqui recados importantes, chaves que faltam, etc ]\n\n`;
-
-  const pend=DB.tasks.filter(t=>!t.done);
-  const done=DB.tasks.filter(t=>t.done);
-  
-  x+=`📌 TAREFAS PENDENTES DO SISTEMA (${pend.length})\n${'─'.repeat(26)}\n`;
-  if(!pend.length){x+='Nenhuma pendência na fila rápida.\n';}
-  else{pend.forEach(t=>x+=`  • ${t.desc}\n`);}
-  
-  x+=`\n👔 SÍNDICOS ALTA PRIORIDADE\n${'─'.repeat(26)}\n`;
-  const sindP=DB.sind.filter(s=>s.status!=='Respondida');
-  if(!sindP.length)x+='Nenhuma demanda de síndico pendente.\n';
-  else sindP.forEach(s=>x+=`• ${s.nome} (${s.cond}) — ${s.tipo}\n  ${s.desc}\n`);
-
-  x+=`\n✅ RESUMO DO QUE FOI FEITO NO TURNO\n${'─'.repeat(26)}\n`;
-  x+=`- Tarefas triadas e registradas: ${done.length}\n`;
-  x+=`- Síndicos respondidos: ${DB.sind.filter(s=>s.status==='Respondida').length}\n`;
-  x+=`- Procedimentos internos registrados: ${DB.atend.length}\n`;
-  
-  x+=`\n══════════════════════════\nFim do turno — ${op}\n`;
-  document.getElementById('exportTxt').value=x;
-  abrirModal('mExport');
-}
-function copiar(){navigator.clipboard.writeText(document.getElementById('exportTxt').value).then(()=>alert('Copiado!'));}
-function imprimirPDF(){
-  const op=DB.op||'Operador';
-  const data=new Date().toLocaleDateString('pt-BR');
-  const conteudo=document.getElementById('exportTxt').value;
-  const win=window.open('','_blank');
-  win.document.write(`<!DOCTYPE html><html><head><title>Passagem de Plantão — ${data}</title>
-  <style>
-    @page{size:A4 portrait;margin:20mm 15mm 20mm 15mm;}
-    body{font-family:'Courier New',monospace;font-size:12px;line-height:1.6;color:#000;white-space:pre-wrap;width:100%;}
-    h1{font-size:14px;text-align:center;margin-bottom:16px;border-bottom:2px solid #000;padding-bottom:6px;}
-  </style></head>
-  <body><h1>PASSAGEM DE PLANTÃO — MYPORT | ${data} | ${op}</h1>${conteudo.replace(/</g,'&lt;')}</body></html>`);
-  win.document.close();
-  setTimeout(()=>win.print(),400);
-}
-
-// ── RELATÓRIO DIÁRIO DE OPERAÇÕES ────────────────
-function gerarRelatorio(){
-  const op=DB.op||'Operador';
-  const tats=[DB.t1,DB.t2].filter(Boolean).join(' / ')||'—';
-  const data=new Date().toLocaleDateString('pt-BR');
-
-  // Puxar apenas tarefas do tipo "OS" para ocorrências
-  const osAll=DB.tasks.filter(t=>t.tipo==='OS');
-
-  // Demandas solucionadas (todas as tarefas concluídas)
-  const allDone=DB.tasks.filter(t=>t.done);
-
-  // Se já existe conteúdo salvo no banco, usá-lo; senão gerar template
-  const textoSalvo=DB.relatorio||'';
-
-  let r='';
-  if(textoSalvo){
-    r=textoSalvo;
-  } else {
-    r+=`Operador(a) ${op}:\n`;
-    r+=`📝 RELATÓRIO DIÁRIO DE OPERAÇÕES\n\n`;
-    r+=`📅 Data: ${data}  |  Período: \n\n`;
-    r+=`👥 EQUIPE ESCALADA:\n`;
-    r+=`Operadores: \n`;
-    r+=`Tático: ${tats}\n\n`;
-    r+=`🛠️ OCORRÊNCIAS TÉCNICAS E MANUTENÇÃO:\n`;
-    if(!osAll.length){
-      r+=`Nenhuma ocorrência registrada.\n`;
-    } else {
-      osAll.forEach(t=>{
-        r+=`\n${t.desc}`;
-        if(t.done) r+=` ✅`;
-        r+=`\n`;
-      });
-    }
-    r+=`\n\n✅ Demandas solucionadas:\n`;
-    if(!allDone.length){
-      r+=`Nenhuma demanda concluída.\n`;
-    } else {
-      allDone.forEach(t=>{
-        r+=`• ${t.desc}\n`;
-      });
-    }
-  }
-
-  document.getElementById('relatTxt').value=r;
-
-  // Auto-salvar no Firebase toda vez que o usuário clicar fora do campo
-  const el=document.getElementById('relatTxt');
-  el.oninput=()=>{DB.relatorio=el.value; save();};
-  el.onblur=()=>{DB.relatorio=el.value; save();};
-
-  abrirModal('mRelat');
-}
-function copiarRelat(){navigator.clipboard.writeText(document.getElementById('relatTxt').value).then(()=>alert('Relatório copiado!'));}
-
-// ── EDITAR TAREFA ──────────────────────────────────
-function editTask(id){
-  const t=DB.tasks.find(t=>t.id===id);if(!t)return;
-  const novo=prompt('Editar tarefa:',t.desc);
-  if(novo!==null && novo.trim()){t.desc=novo.trim();save();renderTasks();}
 }
 
 // ── PORTARIA FÍSICA ────────────────────────────────
@@ -913,18 +748,100 @@ function renderPort(){
     </div>`).join('');
 }
 
-// ── AUTO REFRESH ───────────────────────────────────
-setInterval(()=>{
-  if(document.getElementById('panel-sind').classList.contains('active'))renderSind();
-  updateBadges();
-},15000);
+// ── BADGES ─────────────────────────────────────────
+function updateBadges(){
+  const pF=DB.tasks.filter(t=>!t.done).length;
+  const pS=DB.sind.filter(s=>s.status!=='Respondida').length;
+  const pA=DB.procs?DB.procs.length:0;
+  const pP=DB.ports?DB.ports.length:0;
+  function set(id,n,cls=''){const e=document.getElementById(id);if(!e)return;e.textContent=n;e.className='badge'+(n===0?' zero':'')+(cls?' '+cls:'');}
+  set('bdg-fila',pF);
+  set('bdg-sind',pS);
+  set('bdg-atend',pA,'og');
+  set('bdg-port',pP,'og');
+  if(DB.sind.some(s=>s.status!=='Respondida'&&elMin(s.iso)>=15)){
+    const b=document.getElementById('bdg-sind');
+    if(b){b.style.background='var(--red)';b.style.animation='pulse 1s infinite';}
+  }
+}
+
+// ── EXPORT / PASSAGEM DE PLANTÃO ─────────────────
+function exportar(){
+  const op=DB.op||'Operador';
+  const tats=[DB.t1,DB.t2].filter(Boolean).join(' / ')||'—';
+  const data=new Date().toLocaleDateString('pt-BR');
+  const hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  let x=`══════════════════════════\n🔄 PASSAGEM DE PLANTÃO — MYPORT\nOperador saindo: ${op} | Táticos: ${tats}\nData: ${data}  Hora: ${hora}\n══════════════════════════\n\n`;
+  x+=`⚠️ RECADOS PARA O PRÓXIMO TURNO:\n[ Digite aqui recados importantes, chaves que faltam, etc ]\n\n`;
+  const pend=DB.tasks.filter(t=>!t.done);
+  const done=DB.tasks.filter(t=>t.done);
+  x+=`📌 TAREFAS PENDENTES DO SISTEMA (${pend.length})\n${'─'.repeat(26)}\n`;
+  if(!pend.length){x+='Nenhuma pendência na fila rápida.\n';}
+  else{pend.forEach(t=>x+=`  • ${t.desc}\n`);}
+  x+=`\n👔 SÍNDICOS ALTA PRIORIDADE\n${'─'.repeat(26)}\n`;
+  const sindP=DB.sind.filter(s=>s.status!=='Respondida');
+  if(!sindP.length)x+='Nenhuma demanda de síndico pendente.\n';
+  else sindP.forEach(s=>x+=`• ${s.nome} (${s.cond}) — ${s.tipo}\n  ${s.desc}\n`);
+  x+=`\n✅ RESUMO DO QUE FOI FEITO NO TURNO\n${'─'.repeat(26)}\n`;
+  x+=`- Tarefas triadas e registradas: ${done.length}\n`;
+  x+=`- Síndicos respondidos: ${DB.sind.filter(s=>s.status==='Respondida').length}\n`;
+  x+=`- Procedimentos internos registrados: ${DB.procs?DB.procs.length:0}\n`;
+  x+=`\n══════════════════════════\nFim do turno — ${op}\n`;
+  document.getElementById('exportTxt').value=x;
+  abrirModal('mExport');
+}
+function copiar(){navigator.clipboard.writeText(document.getElementById('exportTxt').value).then(()=>alert('Copiado!'));}
+function imprimirPDF(){
+  const op=DB.op||'Operador';
+  const data=new Date().toLocaleDateString('pt-BR');
+  const conteudo=document.getElementById('exportTxt').value;
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>Passagem de Plantão — ${data}</title>
+  <style>@page{size:A4 portrait;margin:20mm 15mm 20mm 15mm;}body{font-family:'Courier New',monospace;font-size:12px;line-height:1.6;color:#000;white-space:pre-wrap;width:100%;}h1{font-size:14px;text-align:center;margin-bottom:16px;border-bottom:2px solid #000;padding-bottom:6px;}</style></head>
+  <body><h1>PASSAGEM DE PLANTÃO — MYPORT | ${data} | ${op}</h1>${conteudo.replace(/</g,'&lt;')}</body></html>`);
+  win.document.close();
+  setTimeout(()=>win.print(),400);
+}
+
+// ── RELATÓRIO DIÁRIO DE OPERAÇÕES ────────────────
+function gerarRelatorio(){
+  const op=DB.op||'Operador';
+  const tats=[DB.t1,DB.t2].filter(Boolean).join(' / ')||'—';
+  const data=new Date().toLocaleDateString('pt-BR');
+  const osAll=DB.tasks.filter(t=>t.tipo==='OS');
+  const allDone=DB.tasks.filter(t=>t.done);
+  const textoSalvo=DB.relatorio||'';
+  let r='';
+  if(textoSalvo){
+    r=textoSalvo;
+  } else {
+    r+=`Operador(a) ${op}:\n`;
+    r+=`📝 RELATÓRIO DIÁRIO DE OPERAÇÕES\n\n`;
+    r+=`📅 Data: ${data}  |  Período: \n\n`;
+    r+=`👥 EQUIPE ESCALADA:\n`;
+    r+=`Operadores: \n`;
+    r+=`Tático: ${tats}\n\n`;
+    r+=`🛠️ OCORRÊNCIAS TÉCNICAS E MANUTENÇÃO:\n`;
+    if(!osAll.length){r+=`Nenhuma ocorrência registrada.\n`;}
+    else{osAll.forEach(t=>{r+=`\n${t.desc}`;if(t.done)r+=` ✅`;r+=`\n`;});}
+    r+=`\n\n✅ Demandas solucionadas:\n`;
+    if(!allDone.length){r+=`Nenhuma demanda concluída.\n`;}
+    else{allDone.forEach(t=>{r+=`• ${t.desc}\n`;});}
+  }
+  document.getElementById('relatTxt').value=r;
+  const el=document.getElementById('relatTxt');
+  el.oninput=()=>{DB.relatorio=el.value;save();};
+  el.onblur=()=>{DB.relatorio=el.value;save();};
+  abrirModal('mRelat');
+}
+function copiarRelat(){navigator.clipboard.writeText(document.getElementById('relatTxt').value).then(()=>alert('Relatório copiado!'));}
 
 // ── POST-IT ────────────────────────────────────────
 function togglePostit(){
   const box=document.getElementById('postitBox');
   box.classList.toggle('show');
   if(box.classList.contains('show')&&!box.style.bottom){
-    box.style.bottom='80px';box.style.right='24px';
+    box.style.bottom='80px';box.style.right='20px';
   }
 }
 (function(){
@@ -940,10 +857,15 @@ function togglePostit(){
       el.style.bottom='auto';el.style.right='auto';
     };
   });
-  // Auto-grow post-it
   const ta=document.getElementById('postitTxt');
   ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';});
 })();
+
+// ── AUTO REFRESH ───────────────────────────────────
+setInterval(()=>{
+  if(document.getElementById('panel-sind').classList.contains('active'))renderSind();
+  updateBadges();
+},15000);
 
 // ── INIT ───────────────────────────────────────────
 dbRef.once('value').then(snap=>{
