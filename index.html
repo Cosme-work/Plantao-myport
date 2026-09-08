@@ -156,7 +156,7 @@
     .postit.show{display:flex;}
     .postit-header{background:rgba(0,0,0,.12);padding:7px 10px;display:flex;align-items:center;justify-content:space-between;border-radius:4px 4px 0 0;font-size:12px;font-weight:700;color:#444;}
     .postit-header span{font-size:14px;}
-    .postit textarea{background:transparent;border:none;resize:none;min-height:120px;padding:10px;font-size:13px;color:#333;font-family:inherit;outline:none;line-height:1.5;}
+    .postit textarea{background:transparent;border:none;resize:none;min-height:80px;padding:10px;font-size:13px;font-weight:700;color:#333;font-family:inherit;outline:none;line-height:1.5;overflow:hidden;width:100%;}
     .postit-close{background:none;border:none;cursor:pointer;font-size:16px;color:#666;padding:0 2px;line-height:1;}
     .postit-close:hover{color:#c00;}
   </style>
@@ -212,6 +212,12 @@
   </button>
   <button class="tab-btn" onclick="gerarRelatorio()">
     📊 Relatório Diário
+  </button>
+  <button class="tab-btn" onclick="switchTab('sug',this)">
+    💡 Sugestões
+  </button>
+  <button class="tab-btn" onclick="switchTab('port',this)">
+    🏛️ Portaria Física <span id="bdg-port" class="badge og zero">0</span>
   </button>
 </div>
 
@@ -301,8 +307,59 @@
       <div class="empty">Nenhuma instrução registrada ainda.<br>Clique em "+ Nova Instrução da Supervisão" para adicionar.</div>
     </div>
   </div>
+  <!-- ══════════════════════════════════
+       ABA 4 — SUGESTÕES
+  ══════════════════════════════════ -->
+  <div class="panel" id="panel-sug">
+    <div class="sh">
+      <div class="sh-title">💡 Sugestões à Supervisão <small>registre ideias de melhoria operacional</small></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;">
+      <p style="color:var(--muted);font-size:12px;margin-bottom:10px;">📌 Use este espaço para redigir sugestões de implementação ou melhorias operacionais para apresentar à supervisão. O texto é editável e salvo automaticamente.</p>
+      <textarea id="sugTxt"
+        placeholder="Ex: Sugestão — Implementar registro fotográfico de veículos na entrada do condomínio para maior controle de acesso..."
+        style="width:100%;min-height:420px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:14px;line-height:1.8;padding:14px;resize:vertical;outline:none;font-family:inherit;"
+        oninput="DB.sugestao=this.value;save();"
+        onblur="DB.sugestao=this.value;save();"
+      ></textarea>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ABA 5 — PORTARIA FÍSICA
+  ══════════════════════════════════ -->
+  <div class="panel" id="panel-port">
+    <div class="sh">
+      <div class="sh-title">🏛️ Portaria Física <small>escala dos porteiros por condomínio</small></div>
+      <button class="btn btn-orange" onclick="abrirModal('mPort')">+ Novo Condomínio</button>
+    </div>
+    <div class="task-list" id="portList">
+      <div class="empty">Nenhum condomínio cadastrado ainda.<br>Clique em "+ Novo Condomínio" para adicionar.</div>
+    </div>
+  </div>
 
 </div><!-- /panels -->
+
+<!-- MODAL PORTARIA FÍSICA -->
+<div class="overlay" id="mPort">
+  <div class="modal">
+    <h3>🏛️ Cadastrar Condomínio — Portaria Física</h3>
+    <div class="fgrid">
+      <div class="field full">
+        <label>🏢 Nome do Condomínio</label>
+        <input id="pt_nome" placeholder="Ex: Condomínio Arboris"/>
+      </div>
+      <div class="field full">
+        <label>📅 Escala do Porteiro (dias e horários)</label>
+        <textarea id="pt_escala" placeholder="Ex: Seg a Sex: 08:17h às 18h&#10;Sáb e Dom: 08h às 12h" style="min-height:100px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal('mPort')">Cancelar</button>
+      <button class="btn btn-orange" onclick="salvarPort()">✅ Cadastrar</button>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL PROC INTERNO -->
 <div class="overlay" id="mProc">
@@ -407,6 +464,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="fecharModal('mRelat')">Fechar</button>
+      <button class="btn btn-ghost" onclick="DB.relatorio='';gerarRelatorio()">🔄 Regenerar</button>
       <button class="btn btn-green" onclick="copiarRelat()">📋 Copiar tudo</button>
     </div>
   </div>
@@ -429,7 +487,7 @@ if (!firebase.apps.length) {
 const dbRef = firebase.database().ref('plantaoData');
 
 // ── STATE ──────────────────────────────────────────
-const DB = { tasks: [], sind: [], atend: [], procs: [], op: '', t1: '', t2: '', postit: '', relatorio: '' };
+const DB = { tasks: [], sind: [], atend: [], procs: [], ports: [], op: '', t1: '', t2: '', postit: '', relatorio: '', sugestao: '' };
 
 function save() {
   dbRef.set(DB); // Salva na Nuvem em vez de LocalStorage
@@ -446,28 +504,26 @@ dbRef.on('value', (snapshot) => {
       t1: data.t1 || '',
       t2: data.t2 || '',
       procs: data.procs || [],
+      ports: data.ports || [],
       postit: data.postit || '',
-      relatorio: data.relatorio || ''
+      relatorio: data.relatorio || '',
+      sugestao: data.sugestao || ''
     });
-    
-    // Atualiza cabeçalho apenas se o usuário não estiver digitando nele
+
     ['opName','t1','t2'].forEach(id=>{
       const el = document.getElementById(id);
       const key = id==='opName'?'op':id;
-      if (document.activeElement !== el) {
-        el.value = DB[key] || '';
-      }
+      if (document.activeElement !== el) el.value = DB[key] || '';
     });
 
-    // Atualiza post-it se não estiver sendo editado
     const ptEl=document.getElementById('postitTxt');
     if(ptEl && document.activeElement!==ptEl) ptEl.value=DB.postit||'';
 
-    renderTasks();
-    renderSind();
-    renderProc();
-    updateBadges();
-    updateStats();
+    const sgEl=document.getElementById('sugTxt');
+    if(sgEl && document.activeElement!==sgEl) sgEl.value=DB.sugestao||'';
+
+    renderTasks(); renderSind(); renderProc(); renderPort();
+    updateBadges(); updateStats();
   }
 });
 
@@ -583,6 +639,7 @@ function renderTasks(){
         </div>
       </div>
       <div class="task-actions">
+        <button class="btn btn-sm btn-ghost" onclick="editTask(${t.id})" title="Editar">✏️</button>
         <button class="btn btn-sm btn-ghost" onclick="delTask(${t.id})" title="Remover">🗑</button>
       </div>
     </div>`).join('');
@@ -749,13 +806,19 @@ function exportar(){
 }
 function copiar(){navigator.clipboard.writeText(document.getElementById('exportTxt').value).then(()=>alert('Copiado!'));}
 function imprimirPDF(){
+  const op=DB.op||'Operador';
+  const data=new Date().toLocaleDateString('pt-BR');
   const conteudo=document.getElementById('exportTxt').value;
   const win=window.open('','_blank');
-  win.document.write(`<html><head><title>Passagem de Plantão</title>
-  <style>body{font-family:monospace;font-size:13px;padding:30px;white-space:pre-wrap;}</style></head>
-  <body>${conteudo.replace(/</g,'&lt;')}</body></html>`);
+  win.document.write(`<!DOCTYPE html><html><head><title>Passagem de Plantão — ${data}</title>
+  <style>
+    @page{size:A4 portrait;margin:20mm 15mm 20mm 15mm;}
+    body{font-family:'Courier New',monospace;font-size:12px;line-height:1.6;color:#000;white-space:pre-wrap;width:100%;}
+    h1{font-size:14px;text-align:center;margin-bottom:16px;border-bottom:2px solid #000;padding-bottom:6px;}
+  </style></head>
+  <body><h1>PASSAGEM DE PLANTÃO — MYPORT | ${data} | ${op}</h1>${conteudo.replace(/</g,'&lt;')}</body></html>`);
   win.document.close();
-  win.print();
+  setTimeout(()=>win.print(),400);
 }
 
 // ── RELATÓRIO DIÁRIO DE OPERAÇÕES ────────────────
@@ -814,6 +877,42 @@ function gerarRelatorio(){
 }
 function copiarRelat(){navigator.clipboard.writeText(document.getElementById('relatTxt').value).then(()=>alert('Relatório copiado!'));}
 
+// ── EDITAR TAREFA ──────────────────────────────────
+function editTask(id){
+  const t=DB.tasks.find(t=>t.id===id);if(!t)return;
+  const novo=prompt('Editar tarefa:',t.desc);
+  if(novo!==null && novo.trim()){t.desc=novo.trim();save();renderTasks();}
+}
+
+// ── PORTARIA FÍSICA ────────────────────────────────
+function salvarPort(){
+  const nome=g('pt_nome'),escala=g('pt_escala');
+  if(!nome){alert('Informe o nome do condomínio.');return;}
+  DB.ports.push({id:Date.now(),nome,escala});
+  save();fecharModal('mPort');cl('pt_nome','pt_escala');
+  renderPort();updateBadges();
+}
+function delPort(id){
+  if(confirm('Remover este condomínio?')){DB.ports=DB.ports.filter(p=>p.id!==id);save();renderPort();updateBadges();}
+}
+function renderPort(){
+  const el=document.getElementById('portList');if(!el)return;
+  if(!DB.ports||!DB.ports.length){
+    el.innerHTML='<div class="empty">Nenhum condomínio cadastrado ainda.<br>Clique em "+ Novo Condomínio" para adicionar.</div>';
+    return;
+  }
+  el.innerHTML=DB.ports.map(p=>`
+    <div class="task-item">
+      <div class="task-body">
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px;">🏛️ ${p.nome}</div>
+        <div style="font-size:13px;color:var(--muted);white-space:pre-wrap;line-height:1.6;">📅 ${p.escala||'Escala não informada'}</div>
+      </div>
+      <div class="task-actions">
+        <button class="btn btn-sm btn-ghost" onclick="delPort(${p.id})" title="Remover">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
 // ── AUTO REFRESH ───────────────────────────────────
 setInterval(()=>{
   if(document.getElementById('panel-sind').classList.contains('active'))renderSind();
@@ -824,38 +923,32 @@ setInterval(()=>{
 function togglePostit(){
   const box=document.getElementById('postitBox');
   box.classList.toggle('show');
-  if(box.classList.contains('show')){
-    // Posicionar no canto inferior direito se ainda sem posição
-    if(!box.style.bottom){
-      box.style.bottom='80px';
-      box.style.right='24px';
-    }
+  if(box.classList.contains('show')&&!box.style.bottom){
+    box.style.bottom='80px';box.style.right='24px';
   }
 }
-// Arrastar post-it
 (function(){
   const el=document.getElementById('postitBox');
   const handle=document.getElementById('postitHandle');
   let ox=0,oy=0,mx=0,my=0;
   handle.addEventListener('mousedown',e=>{
-    e.preventDefault();
-    mx=e.clientX;my=e.clientY;
+    e.preventDefault();mx=e.clientX;my=e.clientY;
     document.onmouseup=()=>{document.onmouseup=null;document.onmousemove=null;};
     document.onmousemove=e=>{
       ox=mx-e.clientX;oy=my-e.clientY;mx=e.clientX;my=e.clientY;
-      el.style.top=(el.offsetTop-oy)+'px';
-      el.style.left=(el.offsetLeft-ox)+'px';
+      el.style.top=(el.offsetTop-oy)+'px';el.style.left=(el.offsetLeft-ox)+'px';
       el.style.bottom='auto';el.style.right='auto';
     };
   });
+  // Auto-grow post-it
+  const ta=document.getElementById('postitTxt');
+  ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';});
 })();
 
 // ── INIT ───────────────────────────────────────────
-// A interface será renderizada automaticamente quando o Firebase carregar os dados.
-// Mas para o primeiro acesso com banco vazio, forçamos um render vazio.
-dbRef.once('value').then(snap => {
+dbRef.once('value').then(snap=>{
   if(!snap.exists()){
-    renderTasks();renderSind();renderAtend();updateBadges();updateStats();
+    renderTasks();renderSind();renderProc();renderPort();updateBadges();updateStats();
   }
 });
 </script>
