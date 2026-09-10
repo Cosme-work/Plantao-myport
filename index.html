@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="myport-dark">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- saved from url=(0044)https://cosme-work.github.io/Plantao-myport/ -->
+<html lang="pt-BR" data-theme="myport-dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PAINEL DE PLANTÃO OPERACIONAL — Gestão de Turno, Síndico/Ocorrências</title>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="./PAINEL DE PLANTÃO OPERACIONAL — Gestão de Turno, Síndico_Ocorrências_files/firebase-app.js.transferir"></script>
+<script src="./PAINEL DE PLANTÃO OPERACIONAL — Gestão de Turno, Síndico_Ocorrências_files/firebase-database.js.transferir"></script>
 <style>
 :root,[data-theme="myport-dark"]{
   --bg:#0f1117;--surface:#171a26;--surface2:#212538;--surface3:#2b3149;
@@ -60,7 +60,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 
 /* ── SIDEBAR ── */
 .sidebar{width:var(--sb);min-width:var(--sb);background:var(--sb-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden;flex-shrink:0;}
-.sb-top{background:var(--sb-head);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sb-top{background:var(--sb-head);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;}
 .sb-logo{background:var(--orange);color:#fff;font-weight:900;font-size:11px;padding:4px 8px;border-radius:6px;letter-spacing:1px;display:flex;align-items:center;gap:6px;}
 .sb-logo-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1.5s infinite;}
 .sb-logo-sub{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.3px;text-transform:uppercase;line-height:1.2;}
@@ -76,7 +76,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .sb-op{background:var(--sb-head);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;gap:10px;}
 .sb-op-l{display:flex;align-items:center;gap:12px;flex:1;min-width:0;}
 .sb-avatar{width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#ff7300,#ff9500);color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(255,115,0,.35);}
-.sb-name{font-size:14px;font-weight:700;color:var(--text);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-name{font-size:14px;font-weight:800;color:var(--text-h);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sb-status{font-size:11px;color:var(--orange);font-weight:600;display:flex;align-items:center;gap:4px;margin-top:2px;}
 .status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;}
 .sb-clock-w{text-align:right;flex-shrink:0;}
@@ -91,12 +91,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .t-chip input{background:transparent;border:none;color:var(--text);font-size:12px;font-weight:600;outline:none;font-family:var(--font);width:100%;}
 .t-chip input::placeholder{color:var(--muted);font-weight:400;}
 .t-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.team-extra-toggle{display:none;}
+@media(max-width:620px){.sb-team.extra-collapsed .t-grid{display:none}.team-extra-toggle{display:block;background:none;border:0;color:var(--muted);font:700 10px var(--font);letter-spacing:.25px;text-align:left;cursor:pointer;padding:2px 4px}.team-extra-toggle:hover{color:var(--orange);}}
 
 /* Nav */
 .sb-nav{flex:1;overflow-y:auto;}
 .nav-item{width:100%;text-align:left;border:none;cursor:pointer;display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);border-left:4px solid transparent;background:none;font-family:var(--font);transition:background .15s;}
 .nav-item:hover{background:var(--sb-hover);}
-.nav-item.active{background:var(--orange-l);border-left-color:var(--orange);}
+.nav-item.active{background:linear-gradient(90deg,var(--orange-l),rgba(255,115,0,.04));border-left-color:var(--orange);box-shadow:inset 0 0 20px rgba(255,115,0,.05);}
 .nav-ic{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:14px;background:var(--surface2);color:var(--muted);transition:all .18s;}
 .nav-item.active .nav-ic{background:rgba(255,115,0,.15);color:var(--orange);box-shadow:0 0 0 1px rgba(255,115,0,.4);}
 .nav-cnt{flex:1;min-width:0;}
@@ -164,7 +166,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .task-chk.chk{background:var(--green);border-color:var(--green);color:#fff;}
 .task-body{flex:1;min-width:0;}
 .badges-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;}
-.b-tipo{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;background:var(--surface2);color:var(--muted);border:1px solid var(--border);text-transform:uppercase;letter-spacing:.5px;}
+.b-tipo{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:800;border:1px solid;letter-spacing:.45px;display:inline-flex;align-items:center;gap:4px;}
+.b-tipo.tipo-ocorrencia{background:var(--red-l);color:var(--red);border-color:rgba(224,53,53,.35);}.b-tipo.tipo-cadastro{background:var(--blue-l);color:var(--blue);border-color:rgba(26,122,255,.4);}.b-tipo.tipo-entregar{background:var(--green-l);color:var(--green);border-color:rgba(11,180,35,.38);}.b-tipo.tipo-outro{background:var(--yellow-l);color:var(--yellow);border-color:rgba(240,192,64,.38);}
 .b-cond{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:var(--orange-l);color:var(--orange);border:1px solid var(--orange-b);display:inline-flex;align-items:center;gap:4px;}
 .b-prior{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;border:1px solid;}
 .b-prior.alta{background:var(--red-l);color:var(--red);border-color:rgba(224,53,53,.3);}
@@ -190,8 +193,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .quick-bar{padding:8px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
 .quick-bar::-webkit-scrollbar{display:none;}
 .quick-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:4px;flex-shrink:0;margin-right:4px;}
-.q-chip{padding:4px 12px;border-radius:999px;font-size:11.5px;font-weight:500;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s;font-family:var(--font);}
+.q-chip{padding:4px 12px;border-radius:999px;font-size:11.5px;font-weight:500;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s;font-family:var(--font);display:inline-flex;align-items:center;gap:5px;}
 .q-chip:hover{background:var(--orange-l);color:var(--orange);border-color:var(--orange-b);}
+.q-chip .quick-icon{width:18px;height:18px;flex:none;}
 
 /* Capture bar */
 .cap-bar{background:var(--surface);border-top:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
@@ -260,7 +264,7 @@ tr:hover td{background:rgba(255,115,0,.02);}
 /* Post-it */
 .postit-btn{position:fixed;bottom:20px;right:20px;z-index:500;background:var(--surface2);color:var(--orange);border:1px solid var(--border);border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);transition:all .15s;}
 .postit-btn:hover{transform:scale(1.08);background:var(--surface3);}
-.postit{position:fixed;z-index:600;background:#fef08a;border-radius:10px;box-shadow:4px 8px 24px rgba(0,0,0,.45);display:none;flex-direction:column;min-width:260px;max-width:340px;user-select:none;}
+.postit{position:fixed;z-index:600;right:20px;bottom:82px;background:#fef08a;border-radius:10px;box-shadow:4px 8px 24px rgba(0,0,0,.45);display:none;flex-direction:column;min-width:260px;max-width:340px;user-select:none;touch-action:none;}
 .postit.show{display:flex;}
 .postit-hdr{background:rgba(0,0,0,.1);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;border-radius:10px 10px 0 0;font-size:12px;font-weight:700;color:#555;cursor:move;}
 .postit textarea{background:transparent;border:none;resize:none;min-height:80px;padding:10px 12px;font-size:13px;font-weight:600;color:#444;font-family:var(--font);outline:none;line-height:1.55;overflow:hidden;width:100%;}
@@ -278,14 +282,33 @@ tr:hover td{background:rgba(255,115,0,.02);}
 .pill-r{background:var(--red-l);color:var(--red);}
 .pill-b{background:var(--blue-l);color:var(--blue);}
 </style>
-</head>
-<body>
+<style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,#onetap_google_intermediate_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,.adthrive-auto-injected-player-container,.adthrive[id^="cls-video-container"]:has(.adthrive-auto-injected-player-container),#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style></head>
+<style>
+/* Login e sessão */
+body.login-active{display:block;overflow:auto;background:#0a0f1d}.app-shell{display:flex;width:100%;height:100vh;transition:opacity .28s ease}body.login-active .app-shell{display:none}.login-screen{display:none;min-height:100vh;width:100%;align-items:center;justify-content:center;padding:24px;position:relative;overflow:auto;background:#0a0f1d;isolation:isolate}.login-screen:before,.login-screen:after{content:'';position:fixed;width:420px;height:420px;border-radius:50%;filter:blur(100px);opacity:.16;z-index:-1;pointer-events:none}.login-screen:before{background:#1a7aff;top:-180px;left:-170px}.login-screen:after{background:#ff7300;right:-180px;bottom:-220px}body.login-active .login-screen{display:flex}.login-card{width:min(100%,430px);background:#131b2e;border:1px solid #1e293b;border-radius:16px;padding:30px;box-shadow:0 22px 60px #0006;animation:fadeIn .28s ease}.login-icon{width:58px;height:58px;margin:0 auto 16px;border-radius:16px;display:grid;place-items:center;color:#fff;background:#ff7300;box-shadow:0 8px 24px #ff730061}.login-badge{display:table;margin:0 auto 14px;padding:5px 10px;border-radius:999px;border:1px solid #ff73006b;background:#ff730026;color:#ff851a;font-size:10px;font-weight:800;letter-spacing:.7px}.login-title{text-align:center;color:#fff;font-size:20px;line-height:1.25;font-weight:850;margin:0}.login-subtitle{text-align:center;color:#94a3b8;font-size:13px;margin:8px 0 25px}.login-field{display:flex;flex-direction:column;gap:7px;margin-top:14px}.login-field label{font-size:11px;color:#cbd5e1;font-weight:800;letter-spacing:.55px}.login-input-wrap{position:relative;display:flex;align-items:center}.login-input-wrap svg{position:absolute;left:13px;color:#94a3b8;pointer-events:none}.login-input{width:100%;height:46px;border-radius:12px;border:1px solid #334155;background:#0a0f1d;color:#fff;padding:0 13px 0 42px;font:600 14px var(--font);outline:none}.login-input:focus{border-color:#ff7300;box-shadow:0 0 0 3px #ff730021}.login-input::placeholder{color:#64748b}.login-error{display:none;margin-top:15px;padding:10px 12px;border:1px solid #f8717173;border-radius:10px;background:#7f1d1d61;color:#fecaca;font-size:12px;line-height:1.45}.login-error.show{display:block}.login-submit{width:100%;margin-top:18px;padding:13px 16px;border:0;border-radius:12px;background:#ff7300;color:#fff;font:800 14px var(--font);cursor:pointer}.login-submit:hover{background:#ff851a}.login-support{margin-top:16px;padding:14px;border:1px solid #26344b;border-radius:12px;background:#0d1424}.login-support-top{display:flex;gap:10px;align-items:flex-start;color:#ff7300}.login-support strong{display:block;color:#fff;font-size:12px;margin-bottom:3px}.login-support p{margin:0;color:#94a3b8;font-size:11.5px;line-height:1.45}.login-wpp{width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1px solid #10b981;border-radius:10px;background:#10b9811a;color:#6ee7b7;text-decoration:none;font-weight:750;font-size:12px}.login-wpp:hover{background:#10b9812e}.login-footer{text-align:center;color:#64748b;font-size:10.5px;margin:18px 0 0;line-height:1.45}.sb-btn-lock{color:#fca5a5;background:#e0353514;border-color:#e0353547}.sb-btn-lock svg{color:#f87171}.sb-btn-lock:hover{color:#fff;background:#e0353533;border-color:#e03535}@media(max-width:520px){.login-screen{padding:16px;align-items:flex-start}.login-card{padding:24px 20px;margin:auto 0}.login-title{font-size:18px}.login-wpp{font-size:11px}.login-footer{margin-top:14px}}
+</style>
+<body class="login-active">
 
+<section class="login-screen" id="loginScreen" aria-label="Acesso ao painel">
+  <form class="login-card" id="loginForm" novalidate>
+    <div class="login-icon"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+    <div class="login-badge">ACESSO RESTRITO CCO</div>
+    <h1 class="login-title">PAINEL DE PLANTÃO OPERACIONAL</h1>
+    <p class="login-subtitle">Gestão de Turno, Síndico/Ocorrências</p>
+    <div class="login-field"><label for="loginUser">USUÁRIO</label><div class="login-input-wrap"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><input class="login-input" id="loginUser" autocomplete="username" placeholder="Ex: ADMIN" required></div></div>
+    <div class="login-field"><label for="loginPassword">SENHA</label><div class="login-input-wrap"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input class="login-input" id="loginPassword" type="password" autocomplete="current-password" placeholder="••••••••" required></div></div>
+    <div class="login-error" id="loginError" role="alert">Usuário ou senha incorretos. Verifique suas credenciais.</div>
+    <button class="login-submit" type="submit">Acessar Painel Operacional →</button>
+    <div class="login-support"><div class="login-support-top"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2h-2v-5h4"/><path d="M4 14v5h4v-5"/><path d="M12 19v2"/></svg><div><strong>Dúvidas ou Solicitação de Acesso?</strong><p>Fale diretamente no contato</p></div></div><a class="login-wpp" target="_blank" rel="noopener noreferrer" href="https://wa.me/5541987174147?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20ou%20solicita%C3%A7%C3%A3o%20de%20acesso%20ao%20Painel%20Operacional%20CCO"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8A8.5 8.5 0 0 1 12.5 20a8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg>WhatsApp: (41) 98717-4147</a></div>
+    <p class="login-footer">Sessão ativa por 12 horas ou até o encerramento do navegador.</p>
+  </form>
+</section>
+<div class="app-shell" id="appShell">
 <!-- POST-IT -->
 <button class="postit-btn" onclick="togglePostit()" title="Anotação Rápida">
-  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4L16.5 3.5z"/></svg>
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4L16.5 3.5z"></path></svg>
 </button>
-<div class="postit" id="postitBox" style="bottom:80px;right:20px;">
+<div class="postit" id="postitBox">
   <div class="postit-hdr" id="postitHandle">
     <span>🗒️ Anotação Rápida</span>
     <button class="postit-x" onclick="togglePostit()">✕</button>
@@ -300,19 +323,19 @@ tr:hover td{background:rgba(255,115,0,.02);}
       <div class="sb-logo"><span class="sb-logo-dot"></span>PLANTÃO</div>
       <div style="display:flex;flex-direction:column;">
         <span style="font-size:11px;font-weight:800;color:var(--text);letter-spacing:0.5px;text-transform:uppercase;">PAINEL OPERACIONAL</span>
-        <span class="sb-logo-sub">Gestão de Turno & Síndicos</span>
+        <span class="sb-logo-sub">Gestão de Turno &amp; Síndicos</span>
       </div>
     </div>
     <div class="sb-top-r">
       <div class="theme-sw">
-        <button class="t-btn active" id="tb-dark" onclick="selectTheme('myport-dark')" title="Escuro">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <button class="t-btn active" id="tb-dark" onclick="selectTheme(&#39;myport-dark&#39;)" title="Escuro">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
-        <button class="t-btn" id="tb-midnight" onclick="selectTheme('myport-midnight')" title="Midnight">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+        <button class="t-btn" id="tb-midnight" onclick="selectTheme(&#39;myport-midnight&#39;)" title="Midnight">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
         </button>
-        <button class="t-btn" id="tb-light" onclick="selectTheme('myport-light')" title="Claro">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <button class="t-btn" id="tb-light" onclick="selectTheme(&#39;myport-light&#39;)" title="Claro">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
         </button>
       </div>
     </div>
@@ -320,33 +343,34 @@ tr:hover td{background:rgba(255,115,0,.02);}
 
   <div class="sb-op">
     <div class="sb-op-l">
-      <div class="sb-avatar" id="sbAv">OP</div>
+      <div class="sb-avatar" id="sbAv">O</div>
       <div>
         <span class="sb-name" id="sbNm">Operador</span>
         <span class="sb-status"><span class="status-dot"></span>Plantão Operacional CCO</span>
       </div>
     </div>
     <div class="sb-clock-w">
-      <span class="sb-clock" id="clock">00:00:00</span>
-      <span class="sb-date" id="dataHoje"></span>
+      <span class="sb-clock" id="clock">11:27:11</span>
+      <span class="sb-date" id="dataHoje">qui., 10 de set.</span>
     </div>
   </div>
 
-  <div class="sb-team">
+  <div class="sb-team extra-collapsed" id="teamFields">
     <div class="t-chip">
       <span>👤</span><span class="t-chip-lbl">Operador:</span>
-      <input id="opName" placeholder="Nome do Operador..."/>
+      <input id="opName" placeholder="Nome do Operador..." data-ddg-inputtype="identities.firstName" data-ddg-autofill="true">
     </div>
     <div class="t-grid">
-      <div class="t-chip"><span>👷</span><input id="t1" placeholder="Tático..." title="Nome do Tático"/></div>
-      <div class="t-chip"><span>🔧</span><input id="t2" placeholder="Técnico..." title="Nome do Técnico"/></div>
+      <div class="t-chip"><span>👷</span><input id="t1" placeholder="Tático..." title="Nome do Tático" data-ddg-inputtype="unknown"></div>
+      <div class="t-chip"><span>🔧</span><input id="t2" placeholder="Técnico..." title="Nome do Técnico" data-ddg-inputtype="unknown"></div>
     </div>
+    <button class="team-extra-toggle" id="teamToggle" type="button" onclick="toggleTeamFields()">+ Exibir Tático e Técnico</button>
   </div>
 
   <nav class="sb-nav">
-    <button class="nav-item active" id="nav-fila" onclick="switchTab('fila',this)">
+    <button class="nav-item" id="nav-fila" onclick="switchTab(&#39;fila&#39;,this)">
       <div class="nav-ic">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(45deg)"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(45deg)"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>
       </div>
       <div class="nav-cnt">
         <div class="nav-tr"><span class="nav-title">Fila de Tarefas</span><span class="nav-cat">Demandas</span></div>
@@ -354,41 +378,39 @@ tr:hover td{background:rgba(255,115,0,.02);}
       </div>
     </button>
 
-    <button class="nav-item" id="nav-sind" onclick="switchTab('sind',this)">
+    <button class="nav-item active" id="nav-sind" onclick="switchTab(&#39;sind&#39;,this)">
       <div class="nav-ic">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="7" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
       </div>
       <div class="nav-cnt">
-        <div class="nav-tr"><span class="nav-title">Síndicos</span><span class="nav-cat">Prioritário</span></div>
-        <div class="nav-br"><span class="nav-prev" id="prev-sind">Nenhum chamado pendente</span><span class="nav-badge" id="bdg-sind" style="display:none">0</span></div>
+        <div class="nav-tr"><span class="nav-title">Solicitações</span><span class="nav-cat">Pendentes</span></div>
+        <div class="nav-br"><span class="nav-prev" id="prev-sind">Dr. Carlos - Ed. Solar — Solar d…</span><span class="nav-badge red" id="bdg-sind" style="display: inline-flex;">2</span></div>
       </div>
     </button>
 
-    <button class="nav-item" id="nav-atend" onclick="switchTab('atend',this)">
+    <button class="nav-item" id="nav-atend" onclick="switchTab(&#39;atend&#39;,this)">
       <div class="nav-ic">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path><path d="M10 6h4"></path><path d="M10 10h4"></path><path d="M10 14h4"></path><path d="M10 18h4"></path></svg>
       </div>
       <div class="nav-cnt">
         <div class="nav-tr"><span class="nav-title">Proc. Interno / Equipe</span><span class="nav-cat">Supervisão</span></div>
-        <div class="nav-br"><span class="nav-prev" id="prev-atend">Nenhuma instrução registrada</span><span class="nav-badge neutral" id="bdg-atend" style="display:none">0</span></div>
+        <div class="nav-br"><span class="nav-prev" id="prev-atend">CADASTRO DE TAGS DE PEDESTRES.</span><span class="nav-badge neutral" id="bdg-atend" style="display: inline-flex;">2</span></div>
       </div>
     </button>
   </nav>
 
   <div class="sb-btns">
-    <!-- BOTÃO WHATSAPP SUPERVISÃO (SEM BOTÃO DE LIGAR) -->
-    <a href="https://wa.me/5541987174147?text=Ol%C3%A1%2C%20estou%20em%20turno%20no%20plant%C3%A3o%20e%20preciso%20de%20suporte." target="_blank" rel="noopener noreferrer" class="sb-btn sb-btn-wpp" title="Falar no WhatsApp da Supervisão: (41) 98717-4147">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-      <span>WhatsApp: (41) 98717-4147</span>
-    </a>
-
     <button class="sb-btn" onclick="exportar()">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
       Passagem de Plantão
     </button>
     <button class="sb-btn" onclick="gerarRelatorio()">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
       Relatório Diário
+    </button>
+    <button class="sb-btn sb-btn-lock" onclick="logout()" title="Bloquear ou encerrar a sessão">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M21 3v18a2 2 0 0 1-2 2H9"/></svg>
+      Bloquear / Sair
     </button>
   </div>
 </aside>
@@ -397,7 +419,7 @@ tr:hover td{background:rgba(255,115,0,.02);}
 <div class="main">
 
   <!-- FILA -->
-  <div id="panel-fila" class="panel active">
+  <div id="panel-fila" class="panel">
     <div class="topbar">
       <div class="topbar-l">
         <span class="topbar-title">Fila Operacional</span>
@@ -405,79 +427,119 @@ tr:hover td{background:rgba(255,115,0,.02);}
       </div>
       <div class="topbar-r">
         <div class="search-w">
-          <svg class="search-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input class="search-in" id="searchIn" type="text" placeholder="Buscar ocorrência ou condomínio..." oninput="onSearch(this.value)"/>
+          <svg class="search-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+          <input class="search-in" id="searchIn" type="text" placeholder="Buscar ocorrência ou condomínio..." oninput="onSearch(this.value)">
           <button class="search-clr" id="searchClr" onclick="clearSearch()">✕</button>
         </div>
         <button class="btn btn-ghost btn-sm" id="clearDoneBtn" onclick="limparConcluidas()" style="display:none;flex-direction:row;align-items:center;gap:5px;">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-          <span id="clearDoneLbl">Limpar Concluídas</span>
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+          <span id="clearDoneLbl">Limpar Concluídas (0)</span>
         </button>
       </div>
     </div>
 
     <div class="filter-bar">
-      <button class="f-pill fa" data-f="todos" onclick="setFiltro('todos',this)">Todas (<span id="cnt-all">0</span>)</button>
-      <button class="f-pill" data-f="Alta" onclick="setFiltro('Alta',this)">Alta Prioridade <span id="cnt-alta"></span></button>
-      <button class="f-pill" data-f="Média" onclick="setFiltro('Média',this)">Média</button>
-      <button class="f-pill" data-f="Baixa" onclick="setFiltro('Baixa',this)">Baixa</button>
-      <button class="f-pill" data-f="OS" onclick="setFiltro('OS',this)">Ocorrências (OS)</button>
-      <button class="f-pill" data-f="done" onclick="setFiltro('done',this)">Concluídas (<span id="cnt-done">0</span>)</button>
+      <button class="f-pill fa" data-f="todos" onclick="setFiltro(&#39;todos&#39;,this)">Todas (<span id="cnt-all">0</span>)</button>
+      <button class="f-pill" data-f="Alta" onclick="setFiltro(&#39;Alta&#39;,this)">Alta Prioridade <span id="cnt-alta"></span></button>
+      <button class="f-pill" data-f="Média" onclick="setFiltro(&#39;Média&#39;,this)">Média</button>
+      <button class="f-pill" data-f="Baixa" onclick="setFiltro(&#39;Baixa&#39;,this)">Baixa</button>
+      <button class="f-pill" data-f="OS" onclick="setFiltro(&#39;OS&#39;,this)">Ocorrências (OS)</button>
+      <button class="f-pill" data-f="done" onclick="setFiltro(&#39;done&#39;,this)">Concluídas (<span id="cnt-done">0</span>)</button>
     </div>
 
-    <div class="task-area" id="taskArea"></div>
+    <div class="task-area" id="taskArea"><div class="empty-st"><div class="empty-ic"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></div><div class="empty-title">Fila limpa! Nenhuma pendência em aberto.</div><div class="empty-sub">Utilize a barra inferior para registrar novos chamados.</div></div></div>
 
     <div class="quick-bar">
       <span class="quick-lbl">
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
         Atalhos:
       </span>
-      <button class="q-chip" onclick="quickInc('🚪 Portão Veicular')">🚪 Portão Veicular</button>
-      <button class="q-chip" onclick="quickInc('📹 Câmeras')">📹 Câmeras</button>
-      <button class="q-chip" onclick="quickInc('📞 Interfone')">📞 Interfone</button>
-      <button class="q-chip" onclick="quickInc('🛡️ Módulo Guarita')">🛡️ Módulo Guarita</button>
-      <button class="q-chip" onclick="quickInc('📱 Aplicativo')">📱 Aplicativo</button>
-      <button class="q-chip" onclick="quickInc('⚡ Queda de Energia')">⚡ Queda de Energia</button>
+      <button class="q-chip" onclick="quickInc(&#39;📹 Câmeras&#39;)">📹 Câmeras</button>
+      <button class="q-chip" onclick="quickInc(&#39;📞 Interfone&#39;)">📞 Interfone</button>
+      <button class="q-chip" onclick="quickInc(&#39;🛡️ Módulo Guarita&#39;)">🛡️ Módulo Guarita</button>
+      <button class="q-chip" onclick="quickInc(&#39;📱 Aplicativo&#39;)">📱 Aplicativo</button>
+      <button class="q-chip" onclick="quickInc(&#39;⚡ Queda de Energia&#39;)">⚡ Queda de Energia</button>
+      <button class="q-chip" onclick="quickInc(&#39;🏷️ Tag&#39;)" title="Registrar demanda de tag"><svg class="quick-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5a7.5 7.5 0 0 0-7.5 7.5c0 4.5 3.1 8.3 7.5 11.5 4.4-3.2 7.5-7 7.5-11.5A7.5 7.5 0 0 0 12 2.5Z" fill="#1677e8" stroke="#0d4fa8" stroke-width="1.5"/><circle cx="12" cy="6.9" r="1.45" fill="#e6f3ff"/><path d="M8.2 12.2h7.6" stroke="#e6f3ff" stroke-width="1.5" stroke-linecap="round"/></svg>Tag</button>
+      <button class="q-chip" onclick="quickInc(&#39;🎛️ Controle Veicular&#39;)" title="Registrar demanda de controle veicular"><svg class="quick-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="5" fill="#20242b" stroke="#0a0d12" stroke-width="1.4"/><circle cx="12" cy="5.8" r="2" fill="#f45b42" stroke="#ff9a86" stroke-width=".8"/><path d="M9.2 10.5v2.2M14.8 10.5v2.2" stroke="#f7f8fa" stroke-width="1.5" stroke-linecap="round"/><path d="M8.3 13.8h2.1v2.1H8.3zM13.6 13.8h2.1v2.1h-2.1z" fill="none" stroke="#f7f8fa" stroke-width="1.15" stroke-linejoin="round"/></svg>Controle Veicular</button>
     </div>
 
     <form class="cap-bar" onsubmit="addTask(event)">
-      <input class="cap-cond" id="taskCond" list="cond-dl" placeholder="Condomínio..."/>
-      <datalist id="cond-dl"></datalist>
-      <select class="cap-sel" id="taskTipo">
+      <input class="cap-cond" id="taskCond" list="cond-dl" placeholder="Condomínio..." oninput="this.value=this.value.toUpperCase()" data-ddg-inputtype="unknown">
+      <datalist id="cond-dl"><option value="Solar das Palmeiras"></option><option value="Torre Imperial"></option></datalist>
+      <select class="cap-sel" id="taskTipo" data-ddg-inputtype="unknown">
         <option value="OS">⚡ Ocorrência</option>
         <option value="Cadastro">📝 Cadastro</option>
-        <option value="Síndico">👔 Síndico</option>
-        <option value="Atendimento">📋 Atendimento</option>
+        <option value="Entregar">📦 Entregar</option>
         <option value="Outro">📌 Outro</option>
       </select>
-      <select class="cap-sel" id="taskPrior">
+      <select class="cap-sel" id="taskPrior" data-ddg-inputtype="unknown">
         <option value="Alta">🔴 Alta</option>
-        <option value="Média" selected>🟡 Média</option>
+        <option value="Média" selected="">🟡 Média</option>
         <option value="Baixa">🟢 Baixa</option>
       </select>
-      <input class="cap-in" id="taskIn" type="text" placeholder="Descreva a ocorrência, atendimento ou demanda operacional..." oninput="document.getElementById('addBtn').disabled=!this.value.trim()"/>
-      <button class="add-btn" id="addBtn" type="submit" disabled>
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <input class="cap-in" id="taskIn" type="text" placeholder="Descreva a ocorrência, atendimento ou demanda operacional..." oninput="document.getElementById(&#39;addBtn&#39;).disabled=!this.value.trim()" data-ddg-inputtype="unknown">
+      <button class="add-btn" id="addBtn" type="submit" disabled="">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
         Adicionar
       </button>
     </form>
   </div>
 
   <!-- SÍNDICOS -->
-  <div id="panel-sind" class="panel">
+  <div id="panel-sind" class="panel active">
     <div class="topbar">
-      <div class="topbar-l"><span class="topbar-title">Síndicos</span><span class="topbar-badge" id="sind-badge" style="display:none">0 pendentes</span></div>
-      <button class="btn btn-red" onclick="abrirModal('mSind')">+ Nova Demanda</button>
+      <div class="topbar-l"><span class="topbar-title">Síndicos</span><span class="topbar-badge" id="sind-badge" style="display: inline;">2 pendentes</span></div>
+      <button class="btn btn-red" onclick="abrirModal(&#39;mSind&#39;)">+ Nova Demanda</button>
     </div>
     <div class="content-area">
-      <div class="sind-alert" id="alertSind">🚨 ATENÇÃO — Síndico(s) sem resposta há mais de 15 minutos!</div>
+      <div class="sind-alert show" id="alertSind">🚨 ATENÇÃO — Síndico(s) sem resposta há mais de 15 minutos!</div>
       <div class="tbl-wrap">
         <table>
           <thead><tr>
             <th style="color:var(--orange)">Síndico</th><th>Condomínio</th><th>Tipo</th>
             <th>Descrição</th><th>⏱ Tempo</th><th>Status</th><th>Resposta</th><th>Ações</th>
           </tr></thead>
-          <tbody id="bodySind"><tr><td colspan="8" class="empty-td">Nenhuma demanda de síndico.</td></tr></tbody>
+          <tbody id="bodySind"><tr>
+      <td><b style="color:var(--text)">Dr. Carlos - Ed. Solar</b><br><small style="color:var(--muted)">WhatsApp</small></td>
+      <td>Solar das Palmeiras</td>
+      <td><span class="pill pill-b">Gravação de Imagem</span></td>
+      <td style="max-width:180px;white-space:normal;color:var(--muted)">Solicitou cópia das imagens da câmera da portaria de ontem entre 18h e 19h.</td>
+      <td><span class="timer-urg">🔴 3h 13m</span></td>
+      <td>
+        <select class="ssel" onchange="updSindStatus(101,this.value)">
+          <option selected="">Pendente</option>
+          <option>Em andamento</option>
+          <option>Respondida</option>
+        </select>
+      </td>
+      <td style="max-width:140px;white-space:normal;color:var(--muted)">—</td>
+      <td>
+        <div style="display:flex;gap:4px;">
+          <button class="btn btn-sm btn-orange" onclick="abrirRespSind(101)" title="Responder">✏️</button>
+          <button class="btn btn-sm btn-ghost" onclick="deleteSind(101)" title="Excluir">🗑</button>
+        </div>
+      </td>
+    </tr><tr>
+      <td><b style="color:var(--text)">Dra. Renata - Torre Imperial</b><br><small style="color:var(--muted)">Telefone</small></td>
+      <td>Torre Imperial</td>
+      <td><span class="pill pill-b">Problema Técnico</span></td>
+      <td style="max-width:180px;white-space:normal;color:var(--muted)">Portão veicular 02 apresentando lentidão no fechamento.</td>
+      <td><span class="timer-urg">🔴 3h 3m</span></td>
+      <td>
+        <select class="ssel" onchange="updSindStatus(102,this.value)">
+          <option>Pendente</option>
+          <option selected="">Em andamento</option>
+          <option>Respondida</option>
+        </select>
+      </td>
+      <td style="max-width:140px;white-space:normal;color:var(--muted)">Técnico André acionado e a caminho.</td>
+      <td>
+        <div style="display:flex;gap:4px;">
+          <button class="btn btn-sm btn-orange" onclick="abrirRespSind(102)" title="Responder">✏️</button>
+          <button class="btn btn-sm btn-ghost" onclick="deleteSind(102)" title="Excluir">🗑</button>
+        </div>
+      </td>
+    </tr></tbody>
         </table>
       </div>
     </div>
@@ -489,7 +551,30 @@ tr:hover td{background:rgba(255,115,0,.02);}
       <span class="topbar-title">Proc. Interno / Equipe</span>
       <button class="btn btn-orange" onclick="novoProc()">+ Nova Instrução</button>
     </div>
-    <div class="content-area" id="procList"></div>
+    <div class="content-area" id="procList"><div class="proc-card">
+    <div class="proc-hdr" onclick="toggleProc(1788972126254)">
+      <span class="proc-arrow" id="pa-1788972126254">▶</span>
+      <span class="pill pill-b" style="border-radius:4px;flex-shrink:0">📅 09/09/2026</span>
+      <span class="proc-ttl">CADASTRO DE TAGS DE PEDESTRES.</span>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <button class="btn btn-sm btn-ghost" onclick="editProc(1788972126254,event)">✏️</button>
+        <button class="btn btn-sm btn-ghost" onclick="deleteProc(1788972126254,event)">🗑</button>
+      </div>
+    </div>
+    <div class="proc-body" id="pb-1788972126254">SE A TAG FOR AZUL - BASTA CADASTRAR NO CAMPO W.
+SE A TAG FOR PRETA - BASTA CADASTRAR NO CAMPO SERIAL.</div>
+  </div><div class="proc-card">
+    <div class="proc-hdr" onclick="toggleProc(201)">
+      <span class="proc-arrow" id="pa-201">▶</span>
+      <span class="pill pill-b" style="border-radius:4px;flex-shrink:0">📅 01/09/2026</span>
+      <span class="proc-ttl">Acesso de Entregadores de Aplicativo (iFood / Rappi / Zé Delivery) - RETIRAR O CAPACETE</span>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <button class="btn btn-sm btn-ghost" onclick="editProc(201,event)">✏️</button>
+        <button class="btn btn-sm btn-ghost" onclick="deleteProc(201,event)">🗑</button>
+      </div>
+    </div>
+    <div class="proc-body" id="pb-201">Exigir identificação e retirada do capacete na eclusa de pedestres antes de qualquer liberação. Morador deve sempre autorizar previamente ou descer para retirar se for norma interna.</div>
+  </div></div>
   </div>
 
 </div><!-- /main -->
@@ -499,10 +584,10 @@ tr:hover td{background:rgba(255,115,0,.02);}
 <!-- Confirm -->
 <div class="overlay" id="mConfirm">
   <div class="modal" style="max-width:420px;">
-    <div class="modal-hdr"><h3 id="confTitle">Confirmar</h3><button class="icon-btn" onclick="fecharModal('mConfirm')">✕</button></div>
+    <div class="modal-hdr"><h3 id="confTitle">Confirmar</h3><button class="icon-btn" onclick="fecharModal(&#39;mConfirm&#39;)">✕</button></div>
     <p id="confMsg" style="color:var(--muted);font-size:14px;line-height:1.6;"></p>
     <div class="modal-ftr">
-      <button class="btn btn-ghost" onclick="fecharModal('mConfirm')">Cancelar</button>
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mConfirm&#39;)">Cancelar</button>
       <button class="btn" id="confOkBtn" onclick="execConfirm()">Confirmar</button>
     </div>
   </div>
@@ -513,18 +598,20 @@ tr:hover td{background:rgba(255,115,0,.02);}
   <div class="modal" style="max-width:560px;">
     <div class="modal-hdr">
       <h3>✏️ Editar Demanda Operacional</h3>
-      <button class="icon-btn" onclick="fecharModal('mEditTask')">✕</button>
+      <button class="icon-btn" onclick="fecharModal(&#39;mEditTask&#39;)">✕</button>
     </div>
     <div class="fgrid">
       <div class="field full"><label>Descrição / Situação</label><textarea id="et_desc" placeholder="Descreva o problema ou ocorrência..." style="min-height:80px;"></textarea></div>
-      <div class="field"><label>Solicitante / Morador (Opcional)</label><input id="et_sol" placeholder="Ex: Síndica Elen, Ap. 1103..."/></div>
-      <div class="field"><label>Condomínio</label><input id="et_cond" list="et-cond-dl" placeholder="Ex: Solar das Palmeiras..."/><datalist id="et-cond-dl"></datalist></div>
-      <div class="field full"><label style="color:var(--blue);">▶ O QUE FAZER — Instruções para o próximo turno</label><textarea id="et_instr" placeholder="Ex:&#10;1. Abrir OS.&#10;2. Avisar técnico pela manhã." style="min-height:80px;"></textarea></div>
-      <div class="field"><label>Tipo</label><select id="et_tipo"><option value="OS">⚡ Ocorrência</option><option value="Cadastro">📝 Cadastro</option><option value="Síndico">👔 Síndico</option><option value="Atendimento">📋 Atendimento</option><option value="Outro">📌 Outro</option></select></div>
-      <div class="field"><label>Prioridade</label><select id="et_prior"><option value="Alta">🔴 Alta</option><option value="Média">🟡 Média</option><option value="Baixa">🟢 Baixa</option></select></div>
+      <div class="field"><label>Solicitante / Morador (Opcional)</label><input id="et_sol" placeholder="Ex: Síndica Elen, Ap. 1103..." data-ddg-inputtype="unknown"></div>
+      <div class="field"><label>Condomínio</label><input id="et_cond" list="et-cond-dl" placeholder="Ex: SOLAR DAS PALMEIRAS..." oninput="this.value=this.value.toUpperCase()" data-ddg-inputtype="unknown"><datalist id="et-cond-dl"><option value="Solar das Palmeiras"></option><option value="Torre Imperial"></option></datalist></div>
+      <div class="field full"><label style="color:var(--blue);">▶ O QUE FAZER — Instruções para o próximo turno</label><textarea id="et_instr" placeholder="Ex:
+1. Abrir OS.
+2. Avisar técnico pela manhã." style="min-height:80px;"></textarea></div>
+      <div class="field"><label>Tipo</label><select id="et_tipo" data-ddg-inputtype="unknown"><option value="OS">⚡ Ocorrência</option><option value="Cadastro">📝 Cadastro</option><option value="Entregar">📦 Entregar</option><option value="Outro">📌 Outro</option></select></div>
+      <div class="field"><label>Prioridade</label><select id="et_prior" data-ddg-inputtype="unknown"><option value="Alta">🔴 Alta</option><option value="Média">🟡 Média</option><option value="Baixa">🟢 Baixa</option></select></div>
     </div>
     <div class="modal-ftr">
-      <button class="btn btn-ghost" onclick="fecharModal('mEditTask')">Cancelar</button>
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mEditTask&#39;)">Cancelar</button>
       <button class="btn btn-orange" onclick="salvarEditTask()">✅ Salvar Alterações</button>
     </div>
   </div>
@@ -533,16 +620,16 @@ tr:hover td{background:rgba(255,115,0,.02);}
 <!-- Síndico -->
 <div class="overlay" id="mSind">
   <div class="modal">
-    <div class="modal-hdr"><h3 style="color:var(--red);">⚠ Nova Demanda de Síndico</h3><button class="icon-btn" onclick="fecharModal('mSind')">✕</button></div>
+    <div class="modal-hdr"><h3 style="color:var(--red);">⚠ Nova Demanda de Síndico</h3><button class="icon-btn" onclick="fecharModal(&#39;mSind&#39;)">✕</button></div>
     <div class="fgrid">
-      <div class="field"><label>Nome do Síndico</label><input id="si_n" placeholder="Nome..."/></div>
-      <div class="field"><label>Condomínio</label><input id="si_c" placeholder="Nome do condomínio..."/></div>
-      <div class="field"><label>Tipo</label><select id="si_t"><option>Informação / Relatório</option><option>Gravação de Imagem</option><option>Reclamação</option><option>Solicitação de Acesso</option><option>Problema Técnico</option><option>Outro</option></select></div>
-      <div class="field"><label>Contato via</label><select id="si_ct"><option>WhatsApp</option><option>Telefone</option><option>E-mail</option></select></div>
+      <div class="field"><label>Nome do Síndico</label><input id="si_n" placeholder="Nome..." data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
+      <div class="field"><label>Condomínio</label><input id="si_c" placeholder="NOME DO CONDOMÍNIO..." oninput="this.value=this.value.toUpperCase()" data-ddg-inputtype="identities.firstName" data-ddg-autofill="true"></div>
+      <div class="field"><label>Tipo</label><select id="si_t" data-ddg-inputtype="unknown"><option>Informação / Relatório</option><option>Gravação de Imagem</option><option>Reclamação</option><option>Solicitação de Acesso</option><option>Problema Técnico</option><option>Outro</option></select></div>
+      <div class="field"><label>Contato via</label><select id="si_ct" data-ddg-inputtype="unknown"><option>WhatsApp</option><option>Telefone</option><option>E-mail</option></select></div>
       <div class="field full"><label>Descrição</label><textarea id="si_d" placeholder="O que o síndico solicitou?"></textarea></div>
     </div>
     <div class="modal-ftr">
-      <button class="btn btn-ghost" onclick="fecharModal('mSind')">Cancelar</button>
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mSind&#39;)">Cancelar</button>
       <button class="btn btn-red" onclick="salvarSind()">⚠ Registrar</button>
     </div>
   </div>
@@ -551,10 +638,10 @@ tr:hover td{background:rgba(255,115,0,.02);}
 <!-- Responder Síndico -->
 <div class="overlay" id="mRespSind">
   <div class="modal" style="max-width:480px;">
-    <div class="modal-hdr"><h3>Registrar Resposta</h3><button class="icon-btn" onclick="fecharModal('mRespSind')">✕</button></div>
+    <div class="modal-hdr"><h3>Registrar Resposta</h3><button class="icon-btn" onclick="fecharModal(&#39;mRespSind&#39;)">✕</button></div>
     <div class="field"><label>Ação tomada / Resposta</label><textarea id="resp_txt" placeholder="Descreva a ação ou resposta..." style="min-height:100px;"></textarea></div>
     <div class="modal-ftr">
-      <button class="btn btn-ghost" onclick="fecharModal('mRespSind')">Cancelar</button>
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mRespSind&#39;)">Cancelar</button>
       <button class="btn btn-green" onclick="salvarRespSind()">✅ Registrar</button>
     </div>
   </div>
@@ -563,26 +650,37 @@ tr:hover td{background:rgba(255,115,0,.02);}
 <!-- Proc -->
 <div class="overlay" id="mProc">
   <div class="modal">
-    <div class="modal-hdr"><h3 id="mProcTitle">Nova Instrução da Supervisão</h3><button class="icon-btn" onclick="fecharModal('mProc');resetProc()">✕</button></div>
+    <div class="modal-hdr"><h3 id="mProcTitle">Nova Instrução da Supervisão</h3><button class="icon-btn" onclick="fecharModal(&#39;mProc&#39;);resetProc()">✕</button></div>
     <div class="fgrid">
-      <div class="field"><label>📅 Data</label><input id="p_data" type="date"/></div>
-      <div class="field full"><label>📌 Título / Assunto</label><input id="p_titulo" placeholder="Ex: Acesso de Motoqueiros..."/></div>
+      <div class="field"><label>📅 Data</label><input id="p_data" type="date"></div>
+      <div class="field full"><label>📌 Título / Assunto</label><input id="p_titulo" placeholder="Ex: Acesso de Motoqueiros..."></div>
       <div class="field full"><label>📝 Instrução completa</label><textarea id="p_desc" placeholder="Descreva a instrução..." style="min-height:120px;"></textarea></div>
     </div>
     <div class="modal-ftr">
-      <button class="btn btn-ghost" onclick="fecharModal('mProc');resetProc()">Cancelar</button>
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mProc&#39;);resetProc()">Cancelar</button>
       <button id="mProcBtn" class="btn btn-orange" onclick="salvarProc()">✅ Registrar</button>
     </div>
   </div>
 </div>
 
+<!-- Confirmação protegida para exclusão de instrução -->
+<div class="overlay" id="mProcAuth">
+  <form class="modal" style="max-width:420px;" onsubmit="confirmarExclusaoProc(event)">
+    <div class="modal-hdr"><h3 style="color:var(--red);">🔒 Confirmar exclusão</h3><button class="icon-btn" type="button" onclick="cancelarExclusaoProc()">✕</button></div>
+    <p style="color:var(--muted);font-size:13px;line-height:1.55;">Para excluir esta instrução, informe a senha de acesso ao painel.</p>
+    <div class="field"><label for="procDeletePassword">Senha</label><input id="procDeletePassword" type="password" autocomplete="current-password" placeholder="Digite a senha" required></div>
+    <div id="procDeleteError" class="login-error" role="alert">Senha incorreta. A instrução não foi excluída.</div>
+    <div class="modal-ftr"><button class="btn btn-ghost" type="button" onclick="cancelarExclusaoProc()">Cancelar</button><button class="btn btn-red" type="submit">Excluir instrução</button></div>
+  </form>
+</div>
+
 <!-- Passagem Plantão -->
 <div class="overlay" id="mExport">
   <div class="modal" style="max-width:700px;">
-    <div class="modal-hdr"><h3>Passagem de Plantão</h3><button class="icon-btn" onclick="fecharModal('mExport')">✕</button></div>
-    <div class="field"><label>Copie ou salve em PDF:</label><textarea id="exportTxt" style="min-height:300px;font-family:'Courier New',monospace;font-size:12px;"></textarea></div>
+    <div class="modal-hdr"><h3>Passagem de Plantão</h3><button class="icon-btn" onclick="fecharModal(&#39;mExport&#39;)">✕</button></div>
+    <div class="field"><label>Copie ou salve em PDF:</label><textarea id="exportTxt" style="min-height:300px;font-family:&#39;Courier New&#39;,monospace;font-size:12px;"></textarea></div>
     <div class="modal-ftr">
-      <button class="btn btn-ghost" onclick="fecharModal('mExport')">Fechar</button>
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mExport&#39;)">Fechar</button>
       <button class="btn btn-ghost" onclick="imprimirPDF()">🖨️ PDF</button>
       <button class="btn btn-orange" onclick="copiarExport()">📋 Copiar</button>
     </div>
@@ -592,17 +690,52 @@ tr:hover td{background:rgba(255,115,0,.02);}
 <!-- Relatório -->
 <div class="overlay" id="mRelat">
   <div class="modal" style="max-width:700px;">
-    <div class="modal-hdr"><h3>Relatório Diário</h3><button class="icon-btn" onclick="fecharModal('mRelat')">✕</button></div>
-    <div class="field"><label>Edite e copie:</label><textarea id="relatTxt" style="min-height:380px;font-family:'Courier New',monospace;font-size:12px;white-space:pre-wrap;"></textarea></div>
+    <div class="modal-hdr"><h3>Relatório Diário</h3><button class="icon-btn" onclick="fecharModal(&#39;mRelat&#39;)">✕</button></div>
+    <div class="field"><label>Edite e copie:</label><textarea id="relatTxt" style="min-height:380px;font-family:&#39;Courier New&#39;,monospace;font-size:12px;white-space:pre-wrap;"></textarea></div>
     <div class="modal-ftr">
-      <button class="btn btn-ghost" onclick="fecharModal('mRelat')">Fechar</button>
-      <button class="btn btn-ghost" onclick="DB.relatorio='';gerarRelatorio()">🔄 Regenerar</button>
+      <button class="btn btn-ghost" onclick="fecharModal(&#39;mRelat&#39;)">Fechar</button>
+      <button class="btn btn-ghost" onclick="DB.relatorio=&#39;&#39;;gerarRelatorio()">🔄 Regenerar</button>
       <button class="btn btn-orange" onclick="copiarRelat()">📋 Copiar</button>
     </div>
   </div>
 </div>
 
+</div>
 <script>
+// ── AUTENTICAÇÃO / SESSÃO DE 12 HORAS ────────────────
+const SESSION_KEY='myport_session';
+const SESSION_DURATION=12*60*60*1000;
+function getValidSession(){
+  try{
+    const session=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(session&&session.user==='ADMIN'&&Number.isFinite(session.expiresAt)&&Date.now()<session.expiresAt)return session;
+  }catch(e){}
+  localStorage.removeItem(SESSION_KEY);
+  return null;
+}
+function showLogin(){
+  document.body.classList.add('login-active');
+  document.getElementById('loginError')?.classList.remove('show');
+  setTimeout(()=>document.getElementById('loginUser')?.focus(),80);
+}
+function unlockPanel(){document.body.classList.remove('login-active');}
+function logout(){localStorage.removeItem(SESSION_KEY);showLogin();document.getElementById('loginPassword').value='';}
+function initAuthentication(){
+  const form=document.getElementById('loginForm');
+  form?.addEventListener('submit',event=>{
+    event.preventDefault();
+    const user=(document.getElementById('loginUser').value||'').trim().toUpperCase();
+    const password=document.getElementById('loginPassword').value;
+    const error=document.getElementById('loginError');
+    if((user==='ADMIN'||user==='ADMIM')&&password==='8788'){
+      const loginTime=Date.now();
+      localStorage.setItem(SESSION_KEY,JSON.stringify({user:'ADMIN',loginTime,expiresAt:loginTime+SESSION_DURATION}));
+      error.classList.remove('show'); unlockPanel();
+    }else{error.classList.add('show');document.getElementById('loginPassword').select();}
+  });
+  getValidSession()?unlockPanel():showLogin();
+}
+
 // ── ESCAPE HTML HELPER ────────────────────────────────
 function escapeHtml(str){
   if(!str) return '';
@@ -647,8 +780,8 @@ function fallbackCopy(text, successMsg){
 
 // ── FIREBASE ─────────────────────────────────────────
 const firebaseConfig={apiKey:"AIzaSyB29cAMsF3aenU2a9j79u4sb_Eu3qwJx-4",authDomain:"plantao---myport.firebaseapp.com",projectId:"plantao---myport",storageBucket:"plantao---myport.firebasestorage.app",messagingSenderId:"167575793317",appId:"1:167575793317:web:46a189ffa50ac4e1d8674c",databaseURL:"https://plantao---myport-default-rtdb.firebaseio.com"};
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const dbRef=firebase.database().ref('plantaoData');
+let dbRef=null;
+try{if(window.firebase){if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);dbRef=firebase.database().ref('plantaoData');}}catch(e){console.warn('Firebase indisponível; usando armazenamento local.',e);}
 
 // ── LOCAL STORAGE BACKUP / STATE ──────────────────────
 const LOCAL_KEY='myport_plantao_cache_v2';
@@ -666,7 +799,7 @@ function save(){
   }
 }
 
-dbRef.on('value',snap=>{
+if(dbRef)dbRef.on('value',snap=>{
   const d=snap.val();
   if(d){
     Object.assign(DB,{
@@ -711,6 +844,12 @@ function applyTheme(t){
 function selectTheme(t){DB.theme=t;save();applyTheme(t);}
 
 // ── INPUTS ────────────────────────────────────────────
+function toggleTeamFields(){
+  const box=document.getElementById('teamFields');
+  const button=document.getElementById('teamToggle');
+  const collapsed=box.classList.toggle('extra-collapsed');
+  button.textContent=collapsed?'+ Exibir Tático e Técnico':'− Ocultar Tático e Técnico';
+}
 function syncInputs(){
   const map={opName:'op',t1:'t1',t2:'t2'};
   Object.entries(map).forEach(([id,k])=>{
@@ -808,10 +947,21 @@ function switchTab(tab,btn){
 }
 
 // ── COND DATALIST ─────────────────────────────────────
+function normalizarCondominio(valor){return String(valor||'').trim().toLocaleUpperCase('pt-BR');}
+function normalizarTipoTarefa(tipo){return ['OS','Cadastro','Entregar','Outro'].includes(tipo)?tipo:'Outro';}
+function getTipoVisual(tipo){
+  const normalizado=normalizarTipoTarefa(tipo);
+  return {
+    OS:{classe:'tipo-ocorrencia',icone:'⚡',rotulo:'Ocorrência'},
+    Cadastro:{classe:'tipo-cadastro',icone:'📝',rotulo:'Cadastro'},
+    Entregar:{classe:'tipo-entregar',icone:'📦',rotulo:'Entregar'},
+    Outro:{classe:'tipo-outro',icone:'📌',rotulo:'Outro'}
+  }[normalizado];
+}
 function updateCondList(){
   const s=new Set();
-  (DB.sind||[]).forEach(x=>{if(x.cond)s.add(x.cond.trim());});
-  (DB.tasks||[]).forEach(t=>{if(t.cond)s.add(t.cond.trim());});
+  (DB.sind||[]).forEach(x=>{if(x.cond)s.add(normalizarCondominio(x.cond));});
+  (DB.tasks||[]).forEach(t=>{if(t.cond)s.add(normalizarCondominio(t.cond));});
   const arr=Array.from(s).filter(Boolean).sort();
   ['cond-dl','et-cond-dl'].forEach(id=>{
     const dl=document.getElementById(id);
@@ -903,7 +1053,7 @@ function addTask(e){
     desc,
     tipo:gv('taskTipo')||'OS',
     prior:gv('taskPrior')||'Média',
-    cond:gv('taskCond')||undefined,
+    cond:normalizarCondominio(gv('taskCond'))||undefined,
     done:false,
     hora:nowStr(),
     iso:nowISO()
@@ -948,7 +1098,7 @@ function editTask(id){
   document.getElementById('et_sol').value=t.solicitante||'';
   document.getElementById('et_cond').value=t.cond||'';
   document.getElementById('et_instr').value=t.instrucoes||'';
-  document.getElementById('et_tipo').value=t.tipo||'OS';
+  document.getElementById('et_tipo').value=normalizarTipoTarefa(t.tipo);
   document.getElementById('et_prior').value=t.prior||'Média';
   updateCondList();
   abrirModal('mEditTask');
@@ -963,9 +1113,9 @@ function salvarEditTask(){
   const t=DB.tasks.find(x=>x.id===editingTaskId);
   if(t){
     t.desc=desc;
-    t.tipo=document.getElementById('et_tipo').value;
+    t.tipo=normalizarTipoTarefa(document.getElementById('et_tipo').value);
     t.prior=document.getElementById('et_prior').value;
-    t.cond=(document.getElementById('et_cond').value||'').trim()||undefined;
+    t.cond=normalizarCondominio(document.getElementById('et_cond').value)||undefined;
     t.solicitante=(document.getElementById('et_sol').value||'').trim()||undefined;
     t.instrucoes=(document.getElementById('et_instr').value||'').trim()||undefined;
   }
@@ -1045,6 +1195,7 @@ function renderTasks(){
   area.innerHTML=`<div class="task-list">${list.map(t=>{
     const pc=t.done?'done':t.prior==='Alta'?'alta':t.prior==='Média'?'media':'baixa';
     const bpc=t.prior==='Alta'?'alta':t.prior==='Média'?'media':'baixa';
+    const tipoVisual=getTipoVisual(t.tipo);
     const condBdg=t.cond?`<span class="b-cond"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>${escapeHtml(t.cond)}</span>`:'';
     const metaLine=(t.cond||t.solicitante)?`<div class="task-meta-line">${t.cond?`🏢 <b>${escapeHtml(t.cond)}</b>`:''} ${t.cond&&t.solicitante?'·':''} ${t.solicitante?`👤 ${escapeHtml(t.solicitante)}`:''}</div>`:'';
     const instr=t.instrucoes&&!t.done?`<div class="task-instr">▶ ${escapeHtml(t.instrucoes)}</div>`:'';
@@ -1053,7 +1204,7 @@ function renderTasks(){
       <div class="task-chk ${t.done?'chk':''}" onclick="toggleTask(${t.id})">${t.done?'<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}</div>
       <div class="task-body">
         <div class="badges-row">
-          <span class="b-tipo">${escapeHtml(t.tipo)}</span>${condBdg}
+          <span class="b-tipo ${tipoVisual.classe}">${tipoVisual.icone} ${tipoVisual.rotulo}</span>${condBdg}
           <span class="b-prior ${bpc}">${escapeHtml(t.prior)}</span>
           <span class="b-time"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${escapeHtml(t.hora)}</span>
         </div>
@@ -1078,7 +1229,7 @@ function salvarSind(){
   DB.sind.unshift({
     id:Date.now(),
     nome:n,
-    cond:c,
+    cond:normalizarCondominio(c),
     tipo:gv('si_t')||'Informação / Relatório',
     contato:gv('si_ct')||'WhatsApp',
     desc:gv('si_d')||'',
@@ -1239,15 +1390,36 @@ function salvarProc(){
   updateNavPreviews();
 }
 
+let pendingProcDeleteId=null;
 function deleteProc(id,ev){
   ev.stopPropagation();
-  showConfirm('Excluir Instrução','Deseja remover esta instrução?','btn-red','Excluir',()=>{
-    DB.procs=DB.procs.filter(p=>p.id!==id);
+  pendingProcDeleteId=id;
+  const input=document.getElementById('procDeletePassword');
+  input.value='';
+  document.getElementById('procDeleteError').classList.remove('show');
+  abrirModal('mProcAuth');
+  setTimeout(()=>input.focus(),80);
+}
+function cancelarExclusaoProc(){
+  pendingProcDeleteId=null;
+  fecharModal('mProcAuth');
+}
+function confirmarExclusaoProc(ev){
+  ev.preventDefault();
+  const password=document.getElementById('procDeletePassword').value;
+  if(password!=='8788'){
+    document.getElementById('procDeleteError').classList.add('show');
+    document.getElementById('procDeletePassword').select();
+    return;
+  }
+  if(pendingProcDeleteId!==null){
+    DB.procs=DB.procs.filter(p=>p.id!==pendingProcDeleteId);
     save();
     renderProc();
     updateBadges();
     updateNavPreviews();
-  });
+  }
+  cancelarExclusaoProc();
 }
 
 function toggleProc(id){
@@ -1374,16 +1546,25 @@ function copiarRelat(){
 function togglePostit(){
   const box=document.getElementById('postitBox');
   box.classList.toggle('show');
+  if(box.classList.contains('show')&&window.ajustarPostitNaTela) window.ajustarPostitNaTela();
 }
 (()=>{
   const el=document.getElementById('postitBox');
   const hdr=document.getElementById('postitHandle');
-  let isDown=false;
+  let pointerId=null;
   let startX=0,startY=0;
   let initialLeft=0,initialTop=0;
 
-  hdr.addEventListener('mousedown',e=>{
-    isDown=true;
+  if(!el||!hdr)return;
+  window.ajustarPostitNaTela=()=>{
+    if(!el.classList.contains('show'))return;
+    const rect=el.getBoundingClientRect();
+    const left=Math.max(10,Math.min(window.innerWidth-el.offsetWidth-10,rect.left));
+    const top=Math.max(10,Math.min(window.innerHeight-el.offsetHeight-10,rect.top));
+    el.style.bottom='auto';el.style.right='auto';el.style.left=left+'px';el.style.top=top+'px';
+  };
+  hdr.addEventListener('pointerdown',e=>{
+    pointerId=e.pointerId;
     startX=e.clientX;
     startY=e.clientY;
     const rect=el.getBoundingClientRect();
@@ -1393,11 +1574,12 @@ function togglePostit(){
     el.style.right='auto';
     el.style.left=initialLeft+'px';
     el.style.top=initialTop+'px';
+    hdr.setPointerCapture(pointerId);
     e.preventDefault();
   });
 
-  window.addEventListener('mousemove',e=>{
-    if(!isDown) return;
+  hdr.addEventListener('pointermove',e=>{
+    if(pointerId!==e.pointerId) return;
     const dx=e.clientX-startX;
     const dy=e.clientY-startY;
     let newLeft=initialLeft+dx;
@@ -1409,9 +1591,15 @@ function togglePostit(){
     el.style.top=newTop+'px';
   });
 
-  window.addEventListener('mouseup',()=>{isDown=false;});
+  const endDrag=e=>{if(pointerId===e.pointerId){pointerId=null;}};
+  hdr.addEventListener('pointerup',endDrag);
+  hdr.addEventListener('pointercancel',endDrag);
+  window.addEventListener('resize',()=>window.ajustarPostitNaTela());
 
   const ta=document.getElementById('postitTxt');
+  ta.value=DB.postit||'';
+  ta.style.height='auto';
+  ta.style.height=Math.max(80,ta.scrollHeight)+'px';
   ta.addEventListener('input',()=>{
     ta.style.height='auto';
     ta.style.height=Math.max(80,ta.scrollHeight)+'px';
@@ -1431,6 +1619,8 @@ setInterval(()=>{
 applyTheme(DB.theme||'myport-dark');
 syncInputs();
 renderAll();
+initAuthentication();
 </script>
-</body>
-</html>
+
+
+</body></html>
